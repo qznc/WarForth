@@ -1,7 +1,5 @@
 package forth.tokens;
 
-import java.util.Stack;
-
 import forth.InterpreterState;
 import forth.Token;
 

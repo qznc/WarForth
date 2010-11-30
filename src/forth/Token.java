@@ -2,7 +2,6 @@ package forth;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 import forth.tokens.Colon;
 import forth.tokens.Div;

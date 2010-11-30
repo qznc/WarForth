@@ -1,11 +1,5 @@
 package forth;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
-import forth.InterpreterState.states;
 import forth.tokens.Colon;
 import forth.tokens.SemiColon;
 import forth.tokens.Symbol;
@@ -18,7 +12,13 @@ import forth.tokens.Symbol;
  *
  */
 public class Interpreter {
+	public enum Modes {
+		PROCESSING,
+		PROCEDURE_DECLARATION,
+		PROCEDURE_READING,
+	}
 	private InterpreterState state;
+	public Modes mode = Modes.PROCESSING;
 
 	public Interpreter(String program) {
 		state = new InterpreterState(new Tokens(program));
@@ -27,10 +27,10 @@ public class Interpreter {
 	public void tick() {
 		Token token = state.tokens.get(state.token_position);
 		
-		switch (state.state) {
+		switch (mode) {
 		case PROCESSING:
 			if (token instanceof Colon) {
-				state.state = states.PROCEDURE_DECLARATION;
+				mode = Modes.PROCEDURE_DECLARATION;
 				state.token_position += 1;
 			} else {
 				token.process(state);
@@ -43,7 +43,7 @@ public class Interpreter {
 		case PROCEDURE_READING:
 			assert !(token instanceof Colon) : "No declarations inside declarations for now";
 			if (token instanceof SemiColon) {
-				state.state = states.PROCESSING;
+				mode = Modes.PROCESSING;
 			} /* else: do nothing */
 			state.token_position += 1;
 			break;
@@ -56,3 +56,4 @@ public class Interpreter {
 		for (int i=0; i < steps; i++) tick();
 	}
 }
+
