@@ -14,4 +14,11 @@ public class BasicPrograms {
 		ip.tick(3);
 	}
 
+
+	@Test
+	public void basicControlFlow() {
+		String program = ": f + ; 1 2 3 f f";
+		Interpreter ip = new Interpreter(program);
+		ip.tick(13);
+	}
 }

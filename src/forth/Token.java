@@ -39,7 +39,7 @@ abstract public class Token {
 			// that's ok, just use another token type
 		}
 		
-		Token builtin = builtins.get(name);
+		final Token builtin = builtins.get(name);
 		if (builtin != null) return builtin;
 		
 		/* then it is a symbol */

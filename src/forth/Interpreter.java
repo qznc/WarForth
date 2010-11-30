@@ -37,8 +37,9 @@ public class Interpreter {
 			}
 			break;
 		case PROCEDURE_DECLARATION:
-			((Symbol)token).setJumpTarget(state.token_position+1);
 			state.token_position += 1;
+			((Symbol)token).setJumpTarget(state);
+			mode = Modes.PROCEDURE_READING;
 			break;
 		case PROCEDURE_READING:
 			assert !(token instanceof Colon) : "No declarations inside declarations for now";
@@ -50,6 +51,7 @@ public class Interpreter {
 		}
 		
 		System.out.println(state.stack);
+		System.out.println(state.token_position);
 	}
 	
 	public void tick(int steps) {
