@@ -13,7 +13,13 @@ public class BasicPrograms {
 		Interpreter ip = new Interpreter(program);
 		ip.tick(3);
 	}
-
+	
+	@Test
+	public void basicProgramMoreTicks() {
+		String program = "10 2 +";
+		Interpreter ip = new Interpreter(program);
+		ip.tick(4);
+	}
 
 	@Test
 	public void basicControlFlow() {

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tokens {
-	List<Token> tokens;
+	private List<Token> tokens;
 
 	public Tokens(String program) {
 		tokens = new ArrayList<Token>();
@@ -49,4 +49,7 @@ public class Tokens {
 		return tokens.get(position);
 	}
 
+	public int size() {
+		return tokens.size();
+	}
 }

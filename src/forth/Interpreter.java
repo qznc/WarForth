@@ -25,6 +25,11 @@ public class Interpreter {
 	}
 	
 	public void tick() {
+		if (state.token_position >= state.tokens.size()) {
+			/* program finished already */
+			return;
+		}
+		
 		Token token = state.tokens.get(state.token_position);
 		
 		switch (mode) {
@@ -50,8 +55,8 @@ public class Interpreter {
 			break;
 		}
 		
-		System.out.println(state.stack);
-		System.out.println(state.token_position);
+		//System.out.println(state.stack);
+		//System.out.println(state.token_position);
 	}
 	
 	public void tick(int steps) {
