@@ -6,8 +6,8 @@ import forth.Token;
 public class Number extends Token {
 	int number;
 	
-	public Number(int number) {
-		this.number = number;
+	public Number(int num) {
+		number = num;
 	}
 
 	@Override

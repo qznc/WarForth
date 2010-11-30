@@ -23,6 +23,7 @@ public class Tokens {
 					tokens.add(Token.create(program.substring(start, i)));
 					start = i+1;
 				}
+				break;
 			case '#':
 				for (int j=i; j < program.length(); j++) {
 					char cj = program.charAt(i);

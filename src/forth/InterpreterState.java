@@ -9,7 +9,7 @@ public class InterpreterState {
 	public Stack<Token> stack = new Stack<Token>();
 	public Map<Token,Integer> jump_target;
 	
-	public InterpreterState(Tokens tokens) {
-		this.tokens = tokens;
+	public InterpreterState(Tokens toks) {
+		tokens = toks;
 	}
 }
