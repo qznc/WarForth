@@ -1,6 +1,7 @@
 package forth2;
 
 import forth2.words.TopLevel;
+import forth2.words.Word;
 
 public class Interpreter {
 	private final InterpreterState state;
@@ -19,5 +20,9 @@ public class Interpreter {
 		for (int i=0; i < ticks; i++) {
 			tick();
 		}
+	}
+
+	public void injectWord(Word w) {
+		state.dictionary.add(w);
 	}
 }
