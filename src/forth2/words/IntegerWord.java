@@ -4,13 +4,9 @@ import forth2.InterpreterState;
 
 public class IntegerWord extends Word {
 	public int value;
-	
+
 	public IntegerWord(String number) {
-		try {
-			value = Integer.parseInt(number);
-		} catch (NumberFormatException e) {
-			value = 0;
-		}
+		value = Integer.parseInt(number);
 	}
 
 	public IntegerWord(int val) {
@@ -20,12 +16,6 @@ public class IntegerWord extends Word {
 	@Override
 	public void interpret(InterpreterState state) {
 		state.stack.push(this);
-	}
-
-	@Override
-	public void compile(InterpreterState state) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
