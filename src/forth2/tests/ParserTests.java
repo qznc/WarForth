@@ -5,7 +5,7 @@ import org.junit.Test;
 import forth2.Interpreter;
 
 
-public class BasicTests {
+public class ParserTests {
 	@Test
 	public void addA() {
 		Interpreter ip = new Interpreter("1 2 +");

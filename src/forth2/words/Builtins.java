@@ -225,13 +225,15 @@ public final class Builtins {
 		dictionary.add(0, new Word("swap") {
 			@Override
 			public void interpret(InterpreterState state) {
-				state.stack.push(state.stack.remove(1));
+				int len = state.stack.size();
+				state.stack.push(state.stack.remove(len-2));
 			}
 		});
 		dictionary.add(0, new Word("over") {
 			@Override
 			public void interpret(InterpreterState state) {
-				state.stack.push(state.stack.get(1));
+				int len = state.stack.size();
+				state.stack.push(state.stack.get(len-2));
 			}
 		});
 		dictionary.add(0, new Word("rot") {
@@ -261,8 +263,9 @@ public final class Builtins {
 		dictionary.add(0, new Word("2dup") {
 			@Override
 			public void interpret(InterpreterState state) {
-				IntegerWord b = (IntegerWord) state.stack.pop();
-				IntegerWord a = (IntegerWord) state.stack.pop();
+				int len = state.stack.size();
+				IntegerWord b = (IntegerWord) state.stack.get(len-1);
+				IntegerWord a = (IntegerWord) state.stack.get(len-2);
 				state.stack.push(a);
 				state.stack.push(b);
 			}
@@ -277,14 +280,16 @@ public final class Builtins {
 		dictionary.add(0, new Word("2swap") {
 			@Override
 			public void interpret(InterpreterState state) {
-				state.stack.push(state.stack.remove(3));
-				state.stack.push(state.stack.remove(3));
+				int len = state.stack.size();
+				state.stack.push(state.stack.remove(len-4));
+				state.stack.push(state.stack.remove(len-4));
 			}
 		});
 		dictionary.add(0, new Word("?dup") {
 			@Override
 			public void interpret(InterpreterState state) {
-				IntegerWord a = (IntegerWord) state.stack.get(0);
+				int len = state.stack.size();
+				IntegerWord a = (IntegerWord) state.stack.get(len-1);
 				if (a.value != 0) state.stack.push(a);
 			}
 		});
