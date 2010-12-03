@@ -13,6 +13,14 @@ public class IntegerWord extends Word {
 		value = val;
 	}
 
+	public IntegerWord(boolean b) {
+		if (b) {
+			value = 1;
+		} else {
+			value = 0;
+		}
+	}
+
 	@Override
 	public void interpret(InterpreterState state) {
 		state.stack.push(this);

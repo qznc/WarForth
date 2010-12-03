@@ -4,10 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import forth2.words.Colon;
-import forth2.words.Exit;
-import forth2.words.IntegerWord;
-import forth2.words.SemiColon;
 import forth2.words.UserDefinedWord;
 import forth2.words.Word;
 
@@ -20,28 +16,7 @@ public class InterpreterState {
 	public UserDefinedWord toCompile;
 
 	public InterpreterState() {
-		createBuiltins();
-	}
-
-	private void createBuiltins() {
-		dictionary.add(0, new Word("+") {
-			@Override
-			public void interpret(InterpreterState state) {
-				IntegerWord b = (IntegerWord) state.stack.pop();
-				IntegerWord a = (IntegerWord) state.stack.pop();
-				state.stack.push(new IntegerWord(a.value + b.value));
-			}
-
-			@Override
-			public void compile(InterpreterState state) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		dictionary.add(0, new Exit());
-		dictionary.add(0, new Colon());
-		dictionary.add(0, new SemiColon());
+		Builtins.fill(dictionary);
 	}
 
 	public Word getCurrent() {
