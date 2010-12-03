@@ -1,12 +1,9 @@
-package forth2;
+package forth2.words;
 
 import java.util.List;
 
-import forth2.words.Colon;
-import forth2.words.Exit;
-import forth2.words.IntegerWord;
-import forth2.words.SemiColon;
-import forth2.words.Word;
+import forth2.Frame;
+import forth2.InterpreterState;
 
 public final class Builtins {
 	private Builtins() {
@@ -20,9 +17,49 @@ public final class Builtins {
 		comparison(dictionary);
 		bitwise(dictionary);
 
+		interpreterControl(dictionary);
+	}
+
+	private static void interpreterControl(List<Word> dictionary) {
+		dictionary.add(0, new Word(":") {
+			@Override
+			public void interpret(InterpreterState state) {
+				/* read next token as procedure name */
+				Frame fr = state.call_stack.peek();
+				TopLevel tl = (TopLevel) fr.word;
+				String n = tl.getToken(fr.position);
+
+				state.next();
+
+				state.toCompile = new UserDefinedWord(n);
+			}
+
+			@Override
+			public void compile(InterpreterState state) {
+				throw new RuntimeException("Cannot compile <:>!");
+			}
+		});
+
+		dictionary.add(0, new Word(";") {
+			@Override
+			public void interpret(InterpreterState state) {
+				state.call_stack.pop();
+			}
+
+			@Override
+			public void compile(InterpreterState state) {
+				/* add <;> to procedure as "return" */
+				super.compile(state);
+
+				/* add word to dictionary */
+				state.dictionary.add(0,state.toCompile);
+
+				/* stop compiling */
+				state.toCompile = null;
+			}
+		});
+
 		dictionary.add(0, new Exit());
-		dictionary.add(0, new Colon());
-		dictionary.add(0, new SemiColon());
 	}
 
 	private static void bitwise(List<Word> dictionary) {
