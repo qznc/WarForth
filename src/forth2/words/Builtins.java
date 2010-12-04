@@ -21,22 +21,19 @@ public final class Builtins {
 	}
 
 	private static void interpreterControl(List<Word> dictionary) {
-		dictionary.add(0, new Word(":") {
+		dictionary.add(0, new Colon(":") {
 			@Override
 			public void interpret(InterpreterState state) {
-				/* read next token as procedure name */
-				Frame fr = state.call_stack.peek();
-				TopLevel tl = (TopLevel) fr.word;
-				String n = tl.getToken(fr.position);
-
-				state.next();
-
-				state.toCompile = new UserDefinedWord(n);
+				state.toCompile = new UserDefinedWord(getNextToken(state));
+				state.compiling = true;
 			}
+		});
 
+		dictionary.add(0, new Colon(":imm") {
 			@Override
-			public void compile(InterpreterState state) {
-				throw new RuntimeException("Cannot compile <:>!");
+			public void interpret(InterpreterState state) {
+				state.toCompile = new UserDefinedImmediateWord(getNextToken(state));
+				state.compiling = true;
 			}
 		});
 
@@ -54,32 +51,27 @@ public final class Builtins {
 				/* add word to dictionary */
 				state.dictionary.add(0,state.toCompile);
 
+				if (state.trace_debugging) {
+					System.out.println("compiled "+state.toCompile);
+				}
+
 				/* stop compiling */
-				state.toCompile = null;
+				state.compiling = false;
+				state.toCompile = null; /* fail early! */
 			}
 		});
 
-		dictionary.add(0, new Word("'") {
+		dictionary.add(0, new Word("'") { /* TICK */
 			@Override
 			public void interpret(InterpreterState state) {
 				state.stack.push(state.getCurrent());
 				state.next();
 			}
-
-			@Override
-			public void compile(InterpreterState state) {
-				interpret(state); /* same behavior */
-			}
 		});
 
-		dictionary.add(0, new Word(",") {
+		dictionary.add(0, new Word(",") { /* COMMA */
 			@Override
 			public void interpret(InterpreterState state) {
-				throw new RuntimeException("Cannot interpret <,>!");
-			}
-
-			@Override
-			public void compile(InterpreterState state) {
 				state.toCompile.content.add(state.stack.pop());
 			}
 		});
@@ -92,15 +84,14 @@ public final class Builtins {
 
 			@Override
 			public void compile(InterpreterState state) {
-				state.stack.push(state.toCompile);
-				state.toCompile = null; /* switch to interpretation */
+				state.compiling = false; /* switch to interpretation */
 			}
 		});
 
 		dictionary.add(0, new Word("]") {
 			@Override
 			public void interpret(InterpreterState state) {
-				state.toCompile = (UserDefinedWord) state.stack.pop();
+				state.compiling = true;
 			}
 
 			@Override
@@ -113,7 +104,6 @@ public final class Builtins {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord offset = (IntegerWord) state.getCurrent();
-				state.next();
 
 				Frame fr = state.call_stack.peek();
 				fr.position += offset.value;
@@ -123,15 +113,54 @@ public final class Builtins {
 		dictionary.add(0, new Word("0branch") {
 			@Override
 			public void interpret(InterpreterState state) {
-				IntegerWord offset = (IntegerWord) state.stack.pop();
-				state.next();
+				IntegerWord offset = (IntegerWord) state.getCurrent();
 
 				IntegerWord a = (IntegerWord) state.stack.pop();
 
 				Frame fr = state.call_stack.peek();
 				if (a.value == 0) {
-					fr.position += offset.value;
+					fr.position += offset.value; /* jump */
+				} else {
+					state.next(); /* skip offset */
 				}
+			}
+		});
+
+		dictionary.add(0, new Word("FRAME-POSITION") {
+			@Override
+			public void interpret(InterpreterState state) {
+				Frame fr = state.call_stack.peek();
+				state.stack.push(new IntegerWord(fr.position));
+			}
+		});
+
+		dictionary.add(0, new Word("COMPILE-POSITION") {
+			@Override
+			public void interpret(InterpreterState state) {
+				int pos = state.toCompile.content.size();
+				state.stack.push(new IntegerWord(pos));
+			}
+		});
+
+		dictionary.add(0, new Word("!") { /* store inside the currently compiling word */
+			@Override
+			public void interpret(InterpreterState state) {
+				IntegerWord pos = (IntegerWord) state.stack.pop();
+				Word w = state.stack.pop();
+
+				UserDefinedWord function = state.toCompile;
+				function.set(pos.value, w);
+			}
+		});
+
+		dictionary.add(0, new Word("@") { /* load from the current word */
+			@Override
+			public void interpret(InterpreterState state) {
+				IntegerWord pos = (IntegerWord) state.stack.pop();
+
+				Frame fr = state.call_stack.peek();
+				UserDefinedWord function = (UserDefinedWord) fr.word;
+				state.stack.push(function.get(pos.value));
 			}
 		});
 
@@ -281,6 +310,28 @@ public final class Builtins {
 			@Override
 			public void interpret(InterpreterState state) {
 				System.out.println(state.call_stack);
+			}
+		});
+		dictionary.add(0, new Word(".trace") {
+			@Override
+			public void interpret(InterpreterState state) {
+				state.trace_debugging = true;
+			}
+		});
+		dictionary.add(0, new Word(".notrace") {
+			@Override
+			public void interpret(InterpreterState state) {
+				state.trace_debugging = false;
+			}
+		});
+
+		dictionary.add(0, new Word(".code") {
+			@Override
+			public void interpret(InterpreterState state) {
+				UserDefinedWord w = (UserDefinedWord) state.getCurrent();
+				state.next();
+
+				System.out.println("code of "+w+": "+w.content);
 			}
 		});
 	}

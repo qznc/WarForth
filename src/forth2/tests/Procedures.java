@@ -73,10 +73,45 @@ public class Procedures {
 		ip.turn(100);
 	}
 
-
 	@Test
 	public void meta1() {
 		Interpreter ip = new Interpreter(" ' dup ' dup assertEqual");
+		insertTestInstructions(ip);
+		ip.turn(100);
+	}
+
+	@Test
+	public void branches() {
+		Interpreter ip = new Interpreter(" " +
+				" 3    branch 2 4   3 assertEqual " +
+				" 3 0 0branch 2 4   3 assertEqual " +
+				" 3 1 0branch 2 4   4 assertEqual ");
+		insertTestInstructions(ip);
+		ip.turn(100);
+	}
+
+	@Test
+	public void ifthen() {
+		Interpreter ip = new Interpreter(" " +
+				":imm if    ' 0branch , COMPILE-POSITION 0 , ; " +
+				":imm then  dup COMPILE-POSITION swap - swap ! ; " +
+				": iftest   1 0 if 2 then ; " +
+				"iftest 1 assertEqual ");
+		insertTestInstructions(ip);
+		ip.turn(100);
+	}
+
+	@Test
+	public void ifthenelse() {
+		Interpreter ip = new Interpreter(" " +
+				":imm if    ' 0branch , COMPILE-POSITION 0 , ; " +
+				":imm else  ' branch , COMPILE-POSITION 0 , " +
+				"           swap dup COMPILE-POSITION swap - swap ! ; " +
+				":imm then  dup COMPILE-POSITION swap - swap ! ; " +
+				": iftestA   1 if 2 else 3 then ; " +
+				"iftestA 2 assertEqual " +
+				": iftestB   0 if 2 else 3 then ; " +
+				"iftestB 3 assertEqual ");
 		insertTestInstructions(ip);
 		ip.turn(100);
 	}

@@ -47,7 +47,7 @@ public class TopLevel extends UserDefinedWord {
 	}
 
 	@Override
-	public Word getWord(int position) {
+	public Word get(int position) {
 		if (position >= word_strings.size()) {
 			return new Exit();
 		}

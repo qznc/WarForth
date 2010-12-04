@@ -18,7 +18,12 @@ public class UserDefinedWord extends Word {
 		content.add(word);
 	}
 
-	public Word getWord(int position) {
+	public void set(int index, Word w) {
+		//System.out.println("Set "+w+" at pos "+index+" in "+content);
+		content.set(index, w);
+	}
+
+	public Word get(int position) {
 		return content.get(position);
 	}
 

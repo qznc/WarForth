@@ -18,6 +18,7 @@ abstract public class Word {
 	abstract public void interpret(InterpreterState state);
 
 	public void compile(InterpreterState state) {
+		assert (state.compiling);
 		state.toCompile.add(this);
 	}
 
