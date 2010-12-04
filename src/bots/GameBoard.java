@@ -12,21 +12,30 @@ public class GameBoard {
 	private final Map map;
 	//private final Random rnd;
 	private static final String default_prog = "" +
+			":imm begin   COMPILE-POSITION ; " +
+			":imm again   ' branch , COMPILE-POSITION - , ; " +
+			":imm until   ' 0branch , COMPILE-POSITION - , ; " +
+			": sleep 10 begin 1- dup 0= until ; " +
+			": rotating begin sleep direction 1+ turn! again ; " +
 			"move! " +
-			"360 randBounded turn! ";
+			"360 randBounded turn! " +
+			"rotating ";
 
 	public GameBoard(Random rnd) {
 		//this.rnd = rnd;
+		final int width = 1000;
+		final int height = 1000;
 
-		Bot a = new Scout(default_prog, Faction.Red, rnd);
-		a.setPosition(1500,1500);
+		map = new Map(width, height);
+
+		Bot a = new Scout(default_prog, Faction.Red, rnd, 1000, 1000);
+		a.setPosition(100,1000);
 		bots.add(a);
 
-		Bot b = new Scout(default_prog, Faction.Blue, rnd);
-		b.setPosition(1000,1000);
+		Bot b = new Scout(default_prog, Faction.Blue, rnd, 1000, 1000);
+		b.setPosition(1000,800);
 		bots.add(b);
 
-		map = new Map(1000,1000);
 	}
 
 	public void paint(Graphics g, Component observer) {

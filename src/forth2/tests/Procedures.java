@@ -116,6 +116,29 @@ public class Procedures {
 		ip.turn(100);
 	}
 
+	@Test
+	public void begin_until() {
+		Interpreter ip = new Interpreter(" " +
+				":imm begin   COMPILE-POSITION ; " +
+				":imm until   ' 0branch , COMPILE-POSITION - , ; " +
+				": looping 10 begin 1- dup 0= until ; " +
+				"looping 0 assertEqual ");
+		insertTestInstructions(ip);
+		ip.turn(100);
+	}
+
+	@Test
+	public void begin_again() { /* aka infinite loop */
+		Interpreter ip = new Interpreter(" " +
+				":imm begin   COMPILE-POSITION ; " +
+				":imm again   ' branch , COMPILE-POSITION - , ; " +
+				": looping 0 begin 1+ dup again ; " +
+				"looping " +
+				"0 1 assertEqual "); /* assert is never reached */
+		insertTestInstructions(ip);
+		ip.turn(200);
+	}
+
 	private void insertTestInstructions(Interpreter ip) {
 		ip.injectWord(new Word("assertEqual") {
 			@Override

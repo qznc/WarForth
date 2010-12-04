@@ -26,10 +26,14 @@ public class Bot {
 	protected final Faction color;
 	protected final Random rnd;
 	protected BufferedImage sprite;
+	private final int maxX;
+	private final int maxY;
 
-	public Bot(String program, Faction color, Random rnd) {
+	public Bot(String program, Faction color, Random rnd, int maxX, int maxY) {
 		this.color = color;
 		this.rnd = rnd;
+		this.maxX = maxX * POSITION_SCALE;
+		this.maxY = maxY * POSITION_SCALE;
 
 		interpreter = new Interpreter(program);
 		injectWords();
@@ -51,6 +55,8 @@ public class Bot {
 
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
+			if (x > maxX) x = maxX;
+			if (y > maxY) y = maxY;
 		}
 	}
 

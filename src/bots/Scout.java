@@ -11,8 +11,8 @@ import javax.swing.ImageIcon;
 
 public class Scout extends Bot {
 
-	public Scout(String program, Faction color, Random rnd) {
-		super(program, color, rnd);
+	public Scout(String program, Faction color, Random rnd, int maxX, int maxY) {
+		super(program, color, rnd, maxX, maxY);
 
 		URL url = null;
 		switch (color) {
