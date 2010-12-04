@@ -2,6 +2,9 @@ package bots;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import forth2.Interpreter;
@@ -9,17 +12,20 @@ import forth2.InterpreterState;
 import forth2.words.IntegerWord;
 import forth2.words.Word;
 
-public abstract class Bot {
+public class Bot {
+	private static final int POSITION_SCALE = 10;
 	private static final int TICKCOUNT = 100;
 	private static final float SPEED = 10.0f;
 
 	private final Interpreter interpreter;
+
 	protected int x;
 	protected int y;
 	protected int direction; /* 0--360 degree */
 	protected boolean moving;
 	protected final Faction color;
 	protected final Random rnd;
+	protected BufferedImage sprite;
 
 	public Bot(String program, Faction color, Random rnd) {
 		this.color = color;
@@ -95,5 +101,20 @@ public abstract class Bot {
 		});
 	}
 
-	abstract public void paint(Graphics g, Component observer);
+	public void paint(Graphics g, Component observer) {
+		BufferedImage rotated_img = rotate(sprite, direction);
+		g.drawImage(rotated_img, x/POSITION_SCALE, y/POSITION_SCALE, observer);
+	}
+
+	public static BufferedImage rotate(BufferedImage img, int direction) {
+		int dir = 360 - direction; /* transformation is backwards */
+		AffineTransform affineTransform = AffineTransform.getRotateInstance(Math.toRadians(dir),
+				img.getWidth() / 2.0,
+				img.getHeight() / 2.0);
+		BufferedImage rotatedImage = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+		Graphics2D g = (Graphics2D) rotatedImage.getGraphics();
+		g.setTransform(affineTransform);
+		g.drawImage(img, 0, 0, null);
+		return rotatedImage;
+	}
 }
