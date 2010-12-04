@@ -38,8 +38,8 @@ public abstract class Bot {
 		interpreter.turn(TICKCOUNT);
 
 		if (moving) {
-			final int dx = (int) (Math.round(SPEED * Math.cos(direction / 360.0 * 2 * Math.PI)));
-			final int dy = (int) (Math.round(SPEED * Math.sin(direction / 360.0 * 2 * Math.PI)));
+			final int dx = (int) (Math.round(SPEED * Math.cos(Math.toRadians(direction))));
+			final int dy = (int) (Math.round(SPEED * Math.sin(Math.toRadians(direction))));
 			x += dx;
 			y -= dy; /* minus, because (0,0) is top left */
 
