@@ -9,10 +9,19 @@ import bots.GameMain;
 public class WarForth extends Applet {
 	private static final long serialVersionUID = -4662920398000709556L;
 	private GameMain game;
+	private static final String default_prog = "" +
+	":imm begin   COMPILE-POSITION ; " +
+	":imm again   ' branch , COMPILE-POSITION - , ; " +
+	":imm until   ' 0branch , COMPILE-POSITION - , ; " +
+	": sleep 10 begin 1- dup 0= until ; " +
+	": rotating begin sleep direction 1+ turn! again ; " +
+	"move! " +
+	"360 randBounded turn! " +
+	"rotating ";
 
 	@Override
 	public void init() { /* applet loading */
-		game = new GameMain(1337);
+		game = new GameMain(1337, default_prog, default_prog);
 		game.setObserver(this);
 
 		setBackground( Color.BLACK );

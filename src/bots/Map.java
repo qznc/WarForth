@@ -35,4 +35,12 @@ public class Map {
 	public void paint(Graphics g, Component observer) {
 		// nothing
 	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
 }
