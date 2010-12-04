@@ -55,7 +55,7 @@ public class InterpreterState {
 
 	public Word find(String name) {
 		for (Word w : dictionary) {
-			if (w.name.equals(name)) {
+			if (w.hasName(name)) {
 				return w;
 			}
 		}

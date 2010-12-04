@@ -3,7 +3,7 @@ package forth2.words;
 import forth2.InterpreterState;
 
 abstract public class Word {
-	public String name;
+	protected final String name;
 
 	public Word() {
 		name = " uncallable ";
@@ -23,5 +23,9 @@ abstract public class Word {
 	@Override
 	public String toString() {
 		return "<"+name+">";
+	}
+
+	public boolean hasName(String n) {
+		return n.equals(name);
 	}
 }
