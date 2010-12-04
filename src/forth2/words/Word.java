@@ -4,11 +4,9 @@ import forth2.InterpreterState;
 
 abstract public class Word {
 	public String name;
-	public boolean immediate;
 
 	public Word() {
-		name = " "; /* uncallable */
-		immediate = false;
+		name = " uncallable ";
 	}
 
 	protected Word(String n) {
