@@ -72,6 +72,68 @@ public final class Builtins {
 			}
 		});
 
+		dictionary.add(0, new Word(",") {
+			@Override
+			public void interpret(InterpreterState state) {
+				throw new RuntimeException("Cannot interpret <,>!");
+			}
+
+			@Override
+			public void compile(InterpreterState state) {
+				state.toCompile.content.add(state.stack.pop());
+			}
+		});
+
+		dictionary.add(0, new Word("[") {
+			@Override
+			public void interpret(InterpreterState state) {
+				throw new RuntimeException("Cannot interpret <[>!");
+			}
+
+			@Override
+			public void compile(InterpreterState state) {
+				state.stack.push(state.toCompile);
+				state.toCompile = null; /* switch to interpretation */
+			}
+		});
+
+		dictionary.add(0, new Word("]") {
+			@Override
+			public void interpret(InterpreterState state) {
+				state.toCompile = (UserDefinedWord) state.stack.pop();
+			}
+
+			@Override
+			public void compile(InterpreterState state) {
+				throw new RuntimeException("Cannot compile <]>!");
+			}
+		});
+
+		dictionary.add(0, new Word("branch") {
+			@Override
+			public void interpret(InterpreterState state) {
+				IntegerWord offset = (IntegerWord) state.getCurrent();
+				state.next();
+
+				Frame fr = state.call_stack.peek();
+				fr.position += offset.value;
+			}
+		});
+
+		dictionary.add(0, new Word("0branch") {
+			@Override
+			public void interpret(InterpreterState state) {
+				IntegerWord offset = (IntegerWord) state.stack.pop();
+				state.next();
+
+				IntegerWord a = (IntegerWord) state.stack.pop();
+
+				Frame fr = state.call_stack.peek();
+				if (a.value == 0) {
+					fr.position += offset.value;
+				}
+			}
+		});
 
 		dictionary.add(0, new Exit());
 	}
