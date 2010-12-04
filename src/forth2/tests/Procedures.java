@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import forth2.Interpreter;
 import forth2.InterpreterState;
-import forth2.words.IntegerWord;
 import forth2.words.Word;
 
 
@@ -74,13 +73,21 @@ public class Procedures {
 		ip.turn(100);
 	}
 
+
+	@Test
+	public void meta1() {
+		Interpreter ip = new Interpreter(" ' dup ' dup assertEqual");
+		insertTestInstructions(ip);
+		ip.turn(100);
+	}
+
 	private void insertTestInstructions(Interpreter ip) {
 		ip.injectWord(new Word("assertEqual") {
 			@Override
 			public void interpret(InterpreterState state) {
-				IntegerWord b = (IntegerWord) state.stack.pop();
-				IntegerWord a = (IntegerWord) state.stack.pop();
-				Assert.assertEquals(b.value, a.value);
+				Word b = state.stack.pop();
+				Word a = state.stack.pop();
+				Assert.assertEquals(b, a);
 			}
 		});
 	}

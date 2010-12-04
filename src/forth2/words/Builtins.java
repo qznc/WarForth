@@ -59,6 +59,20 @@ public final class Builtins {
 			}
 		});
 
+		dictionary.add(0, new Word("'") {
+			@Override
+			public void interpret(InterpreterState state) {
+				state.stack.push(state.getCurrent());
+				state.next();
+			}
+
+			@Override
+			public void compile(InterpreterState state) {
+				interpret(state); /* same behavior */
+			}
+		});
+
+
 		dictionary.add(0, new Exit());
 	}
 

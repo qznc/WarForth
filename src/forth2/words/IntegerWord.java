@@ -30,4 +30,19 @@ public class IntegerWord extends Word {
 	public String toString() {
 		return "<"+value+">";
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		try {
+			IntegerWord other = (IntegerWord) o;
+			return other.value == value;
+		} catch (ClassCastException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return value;
+	}
 }
