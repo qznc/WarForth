@@ -1,7 +1,5 @@
 package forth2.words;
 
-import java.util.List;
-
 import forth2.Frame;
 import forth2.InterpreterState;
 
@@ -10,18 +8,17 @@ public final class Builtins {
 		/* utility class */
 	}
 
-	public static void fill(List<Word> dictionary) {
-		integerArithmetic(dictionary);
-		basicStackOperations(dictionary);
-		debugging(dictionary);
-		comparison(dictionary);
-		bitwise(dictionary);
-
-		interpreterControl(dictionary);
+	public static void fill(InterpreterState state) {
+		integerArithmetic(state);
+		basicStackOperations(state);
+		debugging(state);
+		comparison(state);
+		bitwise(state);
+		interpreterControl(state);
 	}
 
-	private static void interpreterControl(List<Word> dictionary) {
-		dictionary.add(0, new Colon(":") {
+	private static void interpreterControl(InterpreterState s) {
+		s.insert(new Colon(":") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.toCompile = new UserDefinedWord(getNextToken(state));
@@ -29,7 +26,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Colon(":imm") {
+		s.insert(new Colon(":imm") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.toCompile = new UserDefinedImmediateWord(getNextToken(state));
@@ -37,7 +34,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word(";") {
+		s.insert(new Word(";") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.call_stack.pop();
@@ -49,7 +46,7 @@ public final class Builtins {
 				super.compile(state);
 
 				/* add word to dictionary */
-				state.dictionary.add(0,state.toCompile);
+				state.insert(state.toCompile);
 
 				if (state.trace_debugging) {
 					System.out.println("compiled "+state.toCompile);
@@ -61,7 +58,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word("'") { /* TICK */
+		s.insert(new Word("'") { /* TICK */
 			@Override
 			public void interpret(InterpreterState state) {
 				state.stack.push(state.getCurrent());
@@ -69,14 +66,14 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word(",") { /* COMMA */
+		s.insert(new Word(",") { /* COMMA */
 			@Override
 			public void interpret(InterpreterState state) {
 				state.toCompile.content.add(state.stack.pop());
 			}
 		});
 
-		dictionary.add(0, new Word("[") {
+		s.insert(new Word("[") {
 			@Override
 			public void interpret(InterpreterState state) {
 				throw new RuntimeException("Cannot interpret <[>!");
@@ -88,7 +85,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word("]") {
+		s.insert(new Word("]") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.compiling = true;
@@ -100,7 +97,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word("branch") {
+		s.insert(new Word("branch") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord offset = (IntegerWord) state.getCurrent();
@@ -110,7 +107,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word("0branch") {
+		s.insert(new Word("0branch") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord offset = (IntegerWord) state.getCurrent();
@@ -126,7 +123,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word("FRAME-POSITION") {
+		s.insert(new Word("FRAME-POSITION") {
 			@Override
 			public void interpret(InterpreterState state) {
 				Frame fr = state.call_stack.peek();
@@ -134,7 +131,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word("COMPILE-POSITION") {
+		s.insert(new Word("COMPILE-POSITION") {
 			@Override
 			public void interpret(InterpreterState state) {
 				int pos = state.toCompile.content.size();
@@ -142,7 +139,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word("!") { /* store inside the currently compiling word */
+		s.insert(new Word("!") { /* store inside the currently compiling word */
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord pos = (IntegerWord) state.stack.pop();
@@ -153,7 +150,7 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Word("@") { /* load from the current word */
+		s.insert(new Word("@") { /* load from the current word */
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord pos = (IntegerWord) state.stack.pop();
@@ -164,11 +161,11 @@ public final class Builtins {
 			}
 		});
 
-		dictionary.add(0, new Exit());
+		s.insert(new Exit());
 	}
 
-	private static void bitwise(List<Word> dictionary) {
-		dictionary.add(0, new Word("and") {
+	private static void bitwise(InterpreterState s) {
+		s.insert(new Word("and") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -176,7 +173,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value & b.value));
 			}
 		});
-		dictionary.add(0, new Word("or") {
+		s.insert(new Word("or") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -184,7 +181,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value | b.value));
 			}
 		});
-		dictionary.add(0, new Word("xor") {
+		s.insert(new Word("xor") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -192,7 +189,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value ^ b.value));
 			}
 		});
-		dictionary.add(0, new Word("invert") {
+		s.insert(new Word("invert") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
@@ -201,8 +198,8 @@ public final class Builtins {
 		});
 	}
 
-	private static void comparison(List<Word> dictionary) {
-		dictionary.add(0, new Word("=") {
+	private static void comparison(InterpreterState s) {
+		s.insert(new Word("=") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -210,7 +207,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value == b.value));
 			}
 		});
-		dictionary.add(0, new Word("<>") {
+		s.insert(new Word("<>") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -218,7 +215,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value != b.value));
 			}
 		});
-		dictionary.add(0, new Word(">") {
+		s.insert(new Word(">") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -226,7 +223,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value > b.value));
 			}
 		});
-		dictionary.add(0, new Word("<") {
+		s.insert(new Word("<") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -234,7 +231,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value < b.value));
 			}
 		});
-		dictionary.add(0, new Word(">=") {
+		s.insert(new Word(">=") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -242,49 +239,49 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value >= b.value));
 			}
 		});
-		dictionary.add(0, new Word("<=") {
+		s.insert(new Word("<=") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
 				IntegerWord a = (IntegerWord) state.stack.pop();
 				state.stack.push(new IntegerWord(a.value <= b.value));
 			}
-		});dictionary.add(0, new Word("0=") {
+		});s.insert(new Word("0=") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
 				state.stack.push(new IntegerWord(a.value == 0));
 			}
 		});
-		dictionary.add(0, new Word("0<>") {
+		s.insert(new Word("0<>") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
 				state.stack.push(new IntegerWord(a.value != 0));
 			}
 		});
-		dictionary.add(0, new Word("0>") {
+		s.insert(new Word("0>") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
 				state.stack.push(new IntegerWord(a.value > 0));
 			}
 		});
-		dictionary.add(0, new Word("0<") {
+		s.insert(new Word("0<") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
 				state.stack.push(new IntegerWord(a.value < 0));
 			}
 		});
-		dictionary.add(0, new Word("0>=") {
+		s.insert(new Word("0>=") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
 				state.stack.push(new IntegerWord(a.value >= 0));
 			}
 		});
-		dictionary.add(0, new Word("0<=") {
+		s.insert(new Word("0<=") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
@@ -293,39 +290,39 @@ public final class Builtins {
 		});
 	}
 
-	private static void debugging(List<Word> dictionary) {
-		dictionary.add(0, new Word(".stack") {
+	private static void debugging(InterpreterState s) {
+		s.insert(new Word(".stack") {
 			@Override
 			public void interpret(InterpreterState state) {
 				System.out.println(state.stack);
 			}
 		});
-		dictionary.add(0, new Word(".dictionary") {
-			@Override
-			public void interpret(InterpreterState state) {
-				System.out.println(state.dictionary);
-			}
-		});
-		dictionary.add(0, new Word(".callstack") {
+		s.insert(new Word(".callstack") {
 			@Override
 			public void interpret(InterpreterState state) {
 				System.out.println(state.call_stack);
 			}
 		});
-		dictionary.add(0, new Word(".trace") {
+		s.insert(new Word(".dictionary") {
+			@Override
+			public void interpret(InterpreterState state) {
+				System.out.println(state.dictionary);
+			}
+		});
+		s.insert(new Word(".trace") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.trace_debugging = true;
 			}
 		});
-		dictionary.add(0, new Word(".notrace") {
+		s.insert(new Word(".notrace") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.trace_debugging = false;
 			}
 		});
 
-		dictionary.add(0, new Word(".code") {
+		s.insert(new Word(".code") {
 			@Override
 			public void interpret(InterpreterState state) {
 				UserDefinedWord w = (UserDefinedWord) state.getCurrent();
@@ -336,34 +333,34 @@ public final class Builtins {
 		});
 	}
 
-	private static void basicStackOperations(List<Word> dictionary) {
-		dictionary.add(0, new Word("dup") {
+	private static void basicStackOperations(InterpreterState s) {
+		s.insert(new Word("dup") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.stack.push(state.stack.peek());
 			}
 		});
-		dictionary.add(0, new Word("drop") {
+		s.insert(new Word("drop") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.stack.pop();
 			}
 		});
-		dictionary.add(0, new Word("swap") {
+		s.insert(new Word("swap") {
 			@Override
 			public void interpret(InterpreterState state) {
 				int len = state.stack.size();
 				state.stack.push(state.stack.remove(len-2));
 			}
 		});
-		dictionary.add(0, new Word("over") {
+		s.insert(new Word("over") {
 			@Override
 			public void interpret(InterpreterState state) {
 				int len = state.stack.size();
 				state.stack.push(state.stack.get(len-2));
 			}
 		});
-		dictionary.add(0, new Word("rot") {
+		s.insert(new Word("rot") {
 			@Override
 			public void interpret(InterpreterState state) {
 				/* a b c -- b c a */
@@ -375,7 +372,7 @@ public final class Builtins {
 				state.stack.push(a);
 			}
 		});
-		dictionary.add(0, new Word("-rot") {
+		s.insert(new Word("-rot") {
 			@Override
 			public void interpret(InterpreterState state) {
 				/* a b c -- c a b */
@@ -387,7 +384,7 @@ public final class Builtins {
 				state.stack.push(b);
 			}
 		});
-		dictionary.add(0, new Word("2dup") {
+		s.insert(new Word("2dup") {
 			@Override
 			public void interpret(InterpreterState state) {
 				int len = state.stack.size();
@@ -397,14 +394,14 @@ public final class Builtins {
 				state.stack.push(b);
 			}
 		});
-		dictionary.add(0, new Word("2drop") {
+		s.insert(new Word("2drop") {
 			@Override
 			public void interpret(InterpreterState state) {
 				state.stack.pop();
 				state.stack.pop();
 			}
 		});
-		dictionary.add(0, new Word("2swap") {
+		s.insert(new Word("2swap") {
 			@Override
 			public void interpret(InterpreterState state) {
 				int len = state.stack.size();
@@ -412,7 +409,7 @@ public final class Builtins {
 				state.stack.push(state.stack.remove(len-4));
 			}
 		});
-		dictionary.add(0, new Word("?dup") {
+		s.insert(new Word("?dup") {
 			@Override
 			public void interpret(InterpreterState state) {
 				int len = state.stack.size();
@@ -422,8 +419,8 @@ public final class Builtins {
 		});
 	}
 
-	private static void integerArithmetic(List<Word> dictionary) {
-		dictionary.add(0, new Word("+") {
+	private static void integerArithmetic(InterpreterState s) {
+		s.insert(new Word("+") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -431,7 +428,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value + b.value));
 			}
 		});
-		dictionary.add(0, new Word("-") {
+		s.insert(new Word("-") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -439,7 +436,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value - b.value));
 			}
 		});
-		dictionary.add(0, new Word("/") {
+		s.insert(new Word("/") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -447,7 +444,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value / b.value));
 			}
 		});
-		dictionary.add(0, new Word("%") {
+		s.insert(new Word("%") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -455,7 +452,7 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value % b.value));
 			}
 		});
-		dictionary.add(0, new Word("*") {
+		s.insert(new Word("*") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord b = (IntegerWord) state.stack.pop();
@@ -463,14 +460,14 @@ public final class Builtins {
 				state.stack.push(new IntegerWord(a.value * b.value));
 			}
 		});
-		dictionary.add(0, new Word("1+") {
+		s.insert(new Word("1+") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
 				state.stack.push(new IntegerWord(a.value + 1));
 			}
 		});
-		dictionary.add(0, new Word("1-") {
+		s.insert(new Word("1-") {
 			@Override
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();

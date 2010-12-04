@@ -12,13 +12,13 @@ public class InterpreterState {
 	public boolean compiling = false;
 	public boolean running = true;
 	public boolean trace_debugging = false;
-	public List<Word> dictionary = new LinkedList<Word>();
-	public Stack<Word> stack = new Stack<Word>();
-	public Stack<Frame> call_stack = new Stack<Frame>();
+	public final List<Word> dictionary = new LinkedList<Word>();
+	public final Stack<Word> stack = new Stack<Word>();
+	public final Stack<Frame> call_stack = new Stack<Frame>();
 	public UserDefinedWord toCompile = null;
 
 	public InterpreterState() {
-		Builtins.fill(dictionary);
+		Builtins.fill(this);
 	}
 
 	public Word getCurrent() {
@@ -47,5 +47,18 @@ public class InterpreterState {
 			word.interpret(this);
 		}
 
+	}
+
+	public void insert(Word w) {
+		dictionary.add(w);
+	}
+
+	public Word find(String name) {
+		for (Word w : dictionary) {
+			if (w.name.equals(name)) {
+				return w;
+			}
+		}
+		throw new RuntimeException("Word "+name+" not found");
 	}
 }

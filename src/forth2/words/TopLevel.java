@@ -53,14 +53,12 @@ public class TopLevel extends UserDefinedWord {
 		}
 
 		String tok = word_strings.get(position);
-		for (Word w : state.dictionary) {
-			if (w.name.equals(tok)) {
-				return w;
-			}
+		try {
+			return state.find(tok);
+		} catch (RuntimeException e) {
+			/* not in dictionary, assume integer */
+			return new IntegerWord(tok);
 		}
-
-		/* not in dictionary, assume integer */
-		return new IntegerWord(tok);
 	}
 
 	public String getToken(int position) {

@@ -23,6 +23,6 @@ public class Interpreter {
 	}
 
 	public void injectWord(Word w) {
-		state.dictionary.add(w);
+		state.insert(w);
 	}
 }
