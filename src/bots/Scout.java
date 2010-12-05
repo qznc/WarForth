@@ -28,6 +28,30 @@ public class Scout extends Bot {
 		sprite = (BufferedImage) new ImageIcon(ImageIO.read(url)).getImage();
 	}
 
+	@Override
+	protected double getSpeed(Ground ground) {
+		switch (ground) {
+		case Forest:
+			return 0.9;
+		case Grass:
+			return 1.5;
+		case Rocks:
+			return 0.9;
+		case Sand:
+			return 0.9;
+		case Swamp:
+			return 0.8;
+		case Unknown:
+			return 0.0001;
+		case Void:
+			return 0.0001;
+		case Water:
+			return 0.5;
+		default:
+			throw new RuntimeException("Unknown Ground");
+		}
+	}
+
 
 
 }

@@ -29,7 +29,7 @@ public class GameBoard {
 
 	public void turn() {
 		for (Bot bot : bots) {
-			bot.turn();
+			bot.turn(map);
 		}
 	}
 

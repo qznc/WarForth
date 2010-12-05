@@ -1,6 +1,5 @@
 package bots;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -16,15 +15,8 @@ public class Map {
 	private static final int TILE_SIZE = 10;
 	private final int width;
 	private final int height;
-	private final List<List<Ground>> tiles = new ArrayList<List<Ground>>();
-	private BufferedImage offscreen;
-
-	public Map(int width, int height) {
-		this.width = width;
-		this.height = height;
-
-		initImage();
-	}
+	private final List<List<Ground>> tiles;
+	private final BufferedImage offscreen;
 
 	public Map(String name) throws IOException {
 		URL url = this.getClass().getResource("/resources/maps/"+name);
@@ -33,26 +25,50 @@ public class Map {
 
 		width = map_img.getWidth() * TILE_SIZE;
 		height = map_img.getHeight() * TILE_SIZE;
+		tiles = new ArrayList<List<Ground>>(height);
 		offscreen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
 		// TODO paint a nicer map!
-		for (int x = 0; x < map_img.getWidth(); x++) {
-			for (int y = 0; y < map_img.getWidth(); y++) {
-				int pixel = map_img.getRGB(x, y);
+		for (int img_x = 0; img_x < map_img.getWidth(); img_x++) {
+			List<Ground> row = new ArrayList<Ground>(width);
+			for (int img_y = 0; img_y < map_img.getWidth(); img_y++) {
+				int pixel = map_img.getRGB(img_y, img_x);
+				row.add(img_y, getGroundByColor(pixel));
+
+				/* paint offscreen image */
 				for (int i = 0; i < TILE_SIZE; i++) {
 					for (int j = 0; j < TILE_SIZE; j++) {
-						offscreen.setRGB(x*TILE_SIZE+i, y*TILE_SIZE+j, pixel);
+						offscreen.setRGB(img_x*TILE_SIZE+i, img_y*TILE_SIZE+j, pixel);
 					}
 				}
 			}
+			tiles.add(row);
 		}
 	}
 
-	private void initImage() {
-		offscreen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics g = offscreen.getGraphics();
-        g.setColor(Color.getHSBColor(0.25f, 0.7f, 0.3f));
-        g.fillRect(0,0,width,height);
+	private Ground getGroundByColor(int pixel) throws IOException {
+		switch (pixel) {
+		case 0xff3a9d3a:
+			return Ground.Grass;
+		case 0xff375954:
+			return Ground.Swamp;
+		case 0xffe8d35e:
+			return Ground.Sand;
+		case 0xff323f05:
+			return Ground.Forest;
+		case 0xff0000ff: /* BLUE */
+			return Ground.Grass;
+		case 0xff787878:
+			return Ground.Rocks;
+		case 0xffffffff: /* WHITE */
+			return Ground.Grass;
+		case 0xffff0000: /* RED */
+			return Ground.Grass;
+		case 0xff3674db:
+			return Ground.Water;
+		default:
+			throw new IOException("Map broken. Unknown color: "+Integer.toHexString(pixel));
+		}
 	}
 
 	public Ground get(final int x, final int y) {
@@ -60,14 +76,10 @@ public class Map {
 			return Ground.Void;
 		}
 
-		final int tileX = x / 10;
-		final int tileY = y / 10;
+		final int tileX = x / TILE_SIZE;
+		final int tileY = y / TILE_SIZE;
 
-		try {
-			return tiles.get(tileX).get(tileY);
-		} catch (IndexOutOfBoundsException e) {
-			return Ground.Grass; /* default */
-		}
+		return tiles.get(tileY).get(tileX);
 	}
 
 	public void paint(Graphics g, Component observer) {

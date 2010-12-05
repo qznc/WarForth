@@ -12,10 +12,10 @@ import forth2.InterpreterState;
 import forth2.words.IntegerWord;
 import forth2.words.Word;
 
-public class Bot {
+public abstract class Bot {
+	private static final double SPEED_FACTOR = 10.0;
 	private static final int POSITION_SCALE = 10;
 	private static final int TICKCOUNT = 100;
-	private static final float SPEED = 10.0f;
 
 	private final Interpreter interpreter;
 
@@ -44,21 +44,26 @@ public class Bot {
 		this.y = (y * POSITION_SCALE) % maxY;
 	}
 
-	public void turn() {
+	public void turn(Map map) {
 		interpreter.turn(TICKCOUNT);
 
 		if (moving) {
-			final int dx = (int) (Math.round(SPEED * Math.cos(Math.toRadians(direction))));
-			final int dy = (int) (Math.round(SPEED * Math.sin(Math.toRadians(direction))));
+			Ground ground = map.get(x / POSITION_SCALE, y / POSITION_SCALE);
+
+			double speed = SPEED_FACTOR * getSpeed(ground);
+			final int dx = (int) (Math.round(speed * Math.cos(Math.toRadians(direction))));
+			final int dy = (int) (Math.round(speed * Math.sin(Math.toRadians(direction))));
 			x += dx;
 			y -= dy; /* minus, because (0,0) is top left */
 
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
-			if (x > maxX) x = maxX;
-			if (y > maxY) y = maxY;
+			if (x >= maxX) x = maxX-1;
+			if (y >= maxY) y = maxY-1;
 		}
 	}
+
+	protected abstract double getSpeed(Ground ground);
 
 	private void injectWords() {
 		interpreter.injectWord(new Word("move!") {
