@@ -2,6 +2,7 @@ package bots;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -84,6 +85,13 @@ public class Map {
 
 	public void paint(Graphics g, Component observer) {
 		g.drawImage(offscreen, 0, 0, observer);
+	}
+
+	public Image cloneImage() {
+		BufferedImage img = new BufferedImage(offscreen.getWidth(), offscreen.getHeight(), offscreen.getType());
+		Graphics g = img.getGraphics();
+		g.drawImage(offscreen, 0, 0, null);
+		return img;
 	}
 
 	public int getWidth() {

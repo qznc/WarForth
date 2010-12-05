@@ -2,6 +2,7 @@ package bots;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +21,15 @@ public class GameBoard {
 	}
 
 	public void paint(Graphics g, Component observer) {
-		map.paint(g,observer);
-
+		/* draw offscreen */
+		Image img = map.cloneImage();
+		Graphics ig = img.getGraphics();
 		for (Bot bot : bots) {
-			bot.paint(g, observer);
+			bot.paint(ig, observer);
 		}
+
+		/* then paste everything at once */
+		g.drawImage(img, 0, 0, observer);
 	}
 
 	public void turn() {
