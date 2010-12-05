@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -34,7 +35,21 @@ public class GameBoard {
 
 	public void turn() {
 		for (Bot bot : bots) {
-			bot.turn(map);
+			bot.turn(map, bots);
+		}
+
+		removeDead();
+	}
+
+	private void removeDead() {
+		List<Bot> dead = new LinkedList<Bot>();
+		for (Bot bot : bots) {
+			if (bot.getHP() <= 0) {
+				dead.add(bot);
+			}
+		}
+		for (Bot d : dead) {
+			bots.remove(d);
 		}
 	}
 

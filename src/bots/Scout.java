@@ -52,6 +52,72 @@ public class Scout extends Bot {
 		}
 	}
 
+	@Override
+	protected double getVisualRange(Ground ground) {
+		switch (ground) {
+		case Forest:
+			return 0.5;
+		case Grass:
+			return 2.0;
+		case Rocks:
+			return 1.5;
+		case Sand:
+			return 2.0;
+		case Swamp:
+			return 1.2;
+		case Water:
+			return 1.5;
+		case Unknown:
+			return 0.0001;
+		case Void:
+			return 0.0001;
+		default:
+			throw new RuntimeException("Unknown Ground");
+		}
+	}
 
+	@Override
+	protected double getShootingRange(Ground ground) {
+		switch (ground) {
+		case Forest:
+			return 0.3;
+		case Grass:
+			return 0.5;
+		case Rocks:
+			return 0.4;
+		case Sand:
+			return 0.5;
+		case Swamp:
+			return 0.5;
+		case Water:
+			return 0.5;
+		case Unknown:
+			return 0.0001;
+		case Void:
+			return 0.0001;
+		default:
+			throw new RuntimeException("Unknown Ground");
+		}
+	}
+
+	@Override
+	protected int getEnergyRefill() {
+		return 50;
+	}
+
+	@Override
+	protected int getDamage() {
+		return 30;
+	}
+
+	@Override
+	protected float getArmorModificator() {
+		return 1.0f;
+	}
+
+	@Override
+	public String toString() {
+		return "<scout "+color+"-"+hashCode()+">";
+	}
 
 }

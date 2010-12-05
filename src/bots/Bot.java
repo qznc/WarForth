@@ -1,10 +1,13 @@
 package bots;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import forth2.Interpreter;
@@ -13,9 +16,11 @@ import forth2.words.IntegerWord;
 import forth2.words.Word;
 
 public abstract class Bot {
-	private static final double SPEED_FACTOR = 10.0;
 	private static final int POSITION_SCALE = 10;
 	private static final int TICKCOUNT = 100;
+	private static final double VRANGE_FACTOR = 80.0 * POSITION_SCALE;
+	private static final double SRANGE_FACTOR = 120.0 * POSITION_SCALE;
+	private static final double SPEED_FACTOR = 10.0;
 
 	private final Interpreter interpreter;
 
@@ -28,6 +33,11 @@ public abstract class Bot {
 	protected BufferedImage sprite;
 	private final int maxX;
 	private final int maxY;
+	private List<Bot> sightings;
+	private Bot target;
+	private int energy = 100;
+	private int healthpoints = 100;
+	private Bot display_shot;
 
 	public Bot(String program, Faction color, Random rnd, int maxX, int maxY) {
 		this.color = color;
@@ -44,12 +54,22 @@ public abstract class Bot {
 		this.y = (y * POSITION_SCALE) % maxY;
 	}
 
-	public void turn(Map map) {
+	public int getHP() {
+		return healthpoints;
+	}
+
+	public void turn(Map map, List<Bot> bots) {
 		interpreter.turn(TICKCOUNT);
 
-		if (moving) {
-			Ground ground = map.get(x / POSITION_SCALE, y / POSITION_SCALE);
+		final Ground ground = map.get(x / POSITION_SCALE, y / POSITION_SCALE);
 
+		updateSightings(bots, ground);
+
+		if (target != null && energy >= 100) {
+			shoot();
+		}
+
+		if (moving) {
 			double speed = SPEED_FACTOR * getSpeed(ground);
 			final int dx = (int) (Math.round(speed * Math.cos(Math.toRadians(direction))));
 			final int dy = (int) (Math.round(speed * Math.sin(Math.toRadians(direction))));
@@ -61,9 +81,51 @@ public abstract class Bot {
 			if (x >= maxX) x = maxX-1;
 			if (y >= maxY) y = maxY-1;
 		}
+
+		healthpoints = Math.min(100, healthpoints + 5);
+		energy = Math.min(100, energy + getEnergyRefill());
+	}
+
+	private void shoot() {
+		energy = 0;
+		target.damage(getDamage());
+		display_shot = target;
+	}
+
+	private void damage(int damage) {
+		healthpoints -= damage * getArmorModificator();
+	}
+
+	private void updateSightings(List<Bot> bots, final Ground ground) {
+		sightings = new LinkedList<Bot>();
+		target = null;
+		double vrange = (VRANGE_FACTOR * getVisualRange(ground));
+		double srange = (SRANGE_FACTOR * getShootingRange(ground));
+		double min_range = srange;
+		for (Bot b : bots) {
+			double distance = distance(b, this);
+			if (distance < vrange) {
+				sightings.add(b);
+			}
+			if (distance < min_range && !b.color.equals(color)) {
+				target = b;
+				min_range = distance;
+			}
+		}
+	}
+
+	private static double distance(Bot a, Bot b) {
+		int dx = Math.abs(a.x - b.x);
+		int dy = Math.abs(a.y - b.y);
+		return Math.sqrt(dx*dx + dy*dy);
 	}
 
 	protected abstract double getSpeed(Ground ground);
+	protected abstract double getVisualRange(Ground ground);
+	protected abstract double getShootingRange(Ground ground);
+	protected abstract int getEnergyRefill();
+	protected abstract int getDamage();
+	protected abstract float getArmorModificator();
 
 	private void injectWords() {
 		interpreter.injectWord(new Word("move!") {
@@ -117,6 +179,12 @@ public abstract class Bot {
 		final int offsetX = (int) (rotated_img.getWidth() / 2.0f);
 		final int offsetY = (int) (rotated_img.getHeight() / 2.0f);
 		g.drawImage(rotated_img, (x/POSITION_SCALE)-offsetX, (y/POSITION_SCALE)-offsetY, observer);
+
+		if (display_shot != null) {
+			g.setColor(Color.WHITE);
+			g.drawLine(x/POSITION_SCALE, y/POSITION_SCALE, display_shot.x/POSITION_SCALE, display_shot.y/POSITION_SCALE);
+			display_shot = null;
+		}
 	}
 
 	public static BufferedImage rotate(BufferedImage img, int direction) {
