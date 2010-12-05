@@ -43,8 +43,8 @@ public abstract class Bot extends Actor {
 
 	@Override
 	public void setPosition(int x, int y) {
-		this.x = (x * POSITION_SCALE) % maxX;
-		this.y = (y * POSITION_SCALE) % maxY;
+		this.x = Math.min(maxX, (x * POSITION_SCALE));
+		this.y = Math.min(maxY, (y * POSITION_SCALE));
 	}
 
 	public int getHP() {
@@ -66,8 +66,8 @@ public abstract class Bot extends Actor {
 			double speed = SPEED_FACTOR * getSpeed(ground);
 			final int dx = (int) (Math.round(speed * Math.cos(Math.toRadians(direction))));
 			final int dy = (int) (Math.round(speed * Math.sin(Math.toRadians(direction))));
-			x += dx;
-			y -= dy; /* minus, because (0,0) is top left */
+			x = Math.min(maxX, x + dx);
+			y = Math.min(maxY, y - dy); /* minus, because (0,0) is top left */
 
 			if (x < 0) x = 0;
 			if (y < 0) y = 0;
