@@ -109,7 +109,9 @@ public class Bot {
 
 	public void paint(Graphics g, Component observer) {
 		BufferedImage rotated_img = rotate(sprite, direction);
-		g.drawImage(rotated_img, x/POSITION_SCALE, y/POSITION_SCALE, observer);
+		final int offsetX = (int) (rotated_img.getWidth() / 2.0f);
+		final int offsetY = (int) (rotated_img.getHeight() / 2.0f);
+		g.drawImage(rotated_img, (x/POSITION_SCALE)-offsetX, (y/POSITION_SCALE)-offsetY, observer);
 	}
 
 	public static BufferedImage rotate(BufferedImage img, int direction) {

@@ -13,7 +13,7 @@ public class WarForth extends Applet {
 	":imm begin   COMPILE-POSITION ; " +
 	":imm again   ' branch , COMPILE-POSITION - , ; " +
 	":imm until   ' 0branch , COMPILE-POSITION - , ; " +
-	": sleep 10 begin 1- dup 0= until ; " +
+	": sleep 20 begin 1- dup 0= until ; " +
 	": rotating begin sleep direction 1+ turn! again ; " +
 	"move! " +
 	"360 randBounded turn! " +
@@ -44,6 +44,12 @@ public class WarForth extends Applet {
 	@Override
 	public void destroy() { /* applet is unloaded */
 
+	}
+
+	@Override
+	public void update(Graphics g) {
+		/* overriding update, prevents deletion of screen */
+		paint(g);
 	}
 
 	@Override
