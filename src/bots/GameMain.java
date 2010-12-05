@@ -58,7 +58,7 @@ public class GameMain implements Runnable {
 			}
 
 			try	{
-				Thread.sleep (80);
+				Thread.sleep (1);
 			} catch (InterruptedException ex)	{
 				// do nothing
 			}

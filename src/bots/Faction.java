@@ -3,5 +3,6 @@ package bots;
 public enum Faction {
 	Neutral,
 	Red,
-	Blue
+	Blue,
+	Nobody
 }

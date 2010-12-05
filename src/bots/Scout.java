@@ -23,7 +23,8 @@ public class Scout extends Bot {
 			url = this.getClass().getResource("/resources/img/scout_blue.png");
 			break;
 		case Neutral:
-			assert false : "no neutral scouts";
+		case Nobody:
+			assert false : "scout has wrong color";
 		}
 		sprite = (BufferedImage) new ImageIcon(ImageIO.read(url)).getImage();
 	}
