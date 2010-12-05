@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -34,6 +35,9 @@ public class GameBoard {
 	}
 
 	public void turn() {
+		/* shuffle order for fairness */
+		Collections.shuffle(things, rnd);
+
 		for (Actor a : things) {
 			if (a.type != ActorType.Bot) continue;
 			final Bot bot = (Bot) a;
