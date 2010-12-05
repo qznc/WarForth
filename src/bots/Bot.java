@@ -40,8 +40,8 @@ public class Bot {
 	}
 
 	public void setPosition(int x, int y) {
-		this.x = x;
-		this.y = y;
+		this.x = (x * POSITION_SCALE) % maxX;
+		this.y = (y * POSITION_SCALE) % maxY;
 	}
 
 	public void turn() {
