@@ -5,10 +5,12 @@ import java.awt.Graphics;
 import java.io.IOException;
 import java.util.Random;
 
-public class GameMain extends Thread {
+public class GameMain implements Runnable {
 	private final GameBoard board;
 	private Component observer;
 	private final Random rnd;
+	private boolean running = false;
+	private boolean exit_now = false;
 
 	public GameMain(long random_seed, String red_prog, String blue_prog) throws IOException {
 		rnd = new Random(random_seed);
@@ -27,12 +29,33 @@ public class GameMain extends Thread {
 		this.observer = observer;
 	}
 
+	public void start() {
+		if (running) return;
+
+		running = true;
+		Thread t = new Thread(this);
+		t.start();
+	}
+
+	public void stop() {
+		running = false;
+	}
+
+
+	public void destroy() {
+		running = false;
+		exit_now = true;
+	}
+
 	@Override
 	public void run() {
 		while (true) {
-			board.turn();
+			if (exit_now) return;
 
-			if (observer != null) observer.repaint();
+			if (running) {
+				board.turn();
+				if (observer != null) observer.repaint();
+			}
 
 			try	{
 				Thread.sleep (80);

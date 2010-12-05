@@ -40,17 +40,16 @@ public class WarForth extends Applet {
 	@Override
 	public void start() { /* after applet is loaded */
 		game.start(); /* new thread for game progress */
-
 	}
 
 	@Override
 	public void stop() { /* when unloading the applet */
-
+		game.stop();
 	}
 
 	@Override
 	public void destroy() { /* applet is unloaded */
-
+		game.destroy();
 	}
 
 	@Override
