@@ -1,0 +1,13 @@
+GIMP Palette
+Name: WarForth
+Columns: 3
+#
+  0   0 255	Index 0
+255   0   0	Index 1
+ 50  63   5	Index 2
+ 55  89  84	Index 3
+ 54 116 219	Index 4
+120 120 120	Index 5
+ 58 157  58	Index 6
+232 211  94	Index 7
+255 255 255	Index 8

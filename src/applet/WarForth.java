@@ -3,6 +3,7 @@ package applet;
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.IOException;
 
 import bots.GameMain;
 
@@ -21,7 +22,13 @@ public class WarForth extends Applet {
 
 	@Override
 	public void init() { /* applet loading */
-		game = new GameMain(1337, default_prog, default_prog);
+		try {
+			game = new GameMain(1337, default_prog, default_prog);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
 		game.setObserver(this);
 
 		setBackground( Color.BLACK );

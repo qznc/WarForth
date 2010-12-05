@@ -2,6 +2,7 @@ package bots;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.io.IOException;
 import java.util.Random;
 
 public class GameMain extends Thread {
@@ -9,7 +10,7 @@ public class GameMain extends Thread {
 	private Component observer;
 	private final Random rnd;
 
-	public GameMain(long random_seed, String red_prog, String blue_prog) {
+	public GameMain(long random_seed, String red_prog, String blue_prog) throws IOException {
 		rnd = new Random(random_seed);
 		board = new GameBoard(rnd);
 		board.createBot(Faction.Red, red_prog, 100, 100);

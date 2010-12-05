@@ -11,7 +11,7 @@ import javax.swing.ImageIcon;
 
 public class Scout extends Bot {
 
-	public Scout(String program, Faction color, Random rnd, int maxX, int maxY) {
+	public Scout(String program, Faction color, Random rnd, int maxX, int maxY) throws IOException {
 		super(program, color, rnd, maxX, maxY);
 
 		URL url = null;
@@ -25,12 +25,7 @@ public class Scout extends Bot {
 		case Neutral:
 			assert false : "no neutral scouts";
 		}
-		assert (url != null);
-		try {
-			sprite = (BufferedImage) new ImageIcon(ImageIO.read(url)).getImage();
-		} catch (IOException e) {
-			/* fail */
-		}
+		sprite = (BufferedImage) new ImageIcon(ImageIO.read(url)).getImage();
 	}
 
 
