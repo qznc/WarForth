@@ -11,7 +11,7 @@ import java.util.Random;
 
 
 public class GameBoard {
-	private final List<Bot> bots = new ArrayList<Bot>();
+	private final List<Actor> things = new ArrayList<Actor>();
 	private final Map map;
 	private final Random rnd;
 
@@ -25,8 +25,8 @@ public class GameBoard {
 		/* draw offscreen */
 		Image img = map.cloneImage();
 		Graphics ig = img.getGraphics();
-		for (Bot bot : bots) {
-			bot.paint(ig, observer);
+		for (Actor a : things) {
+			a.paint(ig, observer);
 		}
 
 		/* then paste everything at once */
@@ -34,8 +34,10 @@ public class GameBoard {
 	}
 
 	public void turn() {
-		for (Bot bot : bots) {
-			bot.turn(map, bots);
+		for (Actor a : things) {
+			if (a.type != ActorType.Bot) continue;
+			final Bot bot = (Bot) a;
+			bot.turn(map, things);
 		}
 
 		removeDead();
@@ -43,19 +45,21 @@ public class GameBoard {
 
 	private void removeDead() {
 		List<Bot> dead = new LinkedList<Bot>();
-		for (Bot bot : bots) {
+		for (Actor a : things) {
+			if (a.type != ActorType.Bot) continue;
+			final Bot bot = (Bot) a;
 			if (bot.getHP() <= 0) {
 				dead.add(bot);
 			}
 		}
 		for (Bot d : dead) {
-			bots.remove(d);
+			things.remove(d);
 		}
 	}
 
 	public void createBot(Faction color, String program, int x, int y) throws IOException {
 		Bot b = new Scout(program, color, rnd, map.getWidth(), map.getHeight());
 		b.setPosition(x,y);
-		bots.add(b);
+		things.add(b);
 	}
 }

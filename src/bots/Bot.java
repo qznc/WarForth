@@ -3,9 +3,6 @@ package bots;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -15,8 +12,7 @@ import forth2.InterpreterState;
 import forth2.words.IntegerWord;
 import forth2.words.Word;
 
-public abstract class Bot {
-	private static final int POSITION_SCALE = 10;
+public abstract class Bot extends Actor {
 	private static final int TICKCOUNT = 100;
 	private static final double VRANGE_FACTOR = 80.0 * POSITION_SCALE;
 	private static final double SRANGE_FACTOR = 120.0 * POSITION_SCALE;
@@ -24,23 +20,19 @@ public abstract class Bot {
 
 	private final Interpreter interpreter;
 
-	protected int x;
-	protected int y;
-	protected int direction; /* 0--360 degree */
+
 	protected boolean moving;
-	protected final Faction color;
 	protected final Random rnd;
-	protected BufferedImage sprite;
 	private final int maxX;
 	private final int maxY;
-	private List<Bot> sightings;
+	private List<Actor> sightings;
 	private Bot target;
 	private int energy = 100;
-	private int healthpoints = 100;
+	private int hp = 100;
 	private Bot display_shot;
 
 	public Bot(String program, Faction color, Random rnd, int maxX, int maxY) {
-		this.color = color;
+		super(ActorType.Bot, color);
 		this.rnd = rnd;
 		this.maxX = maxX * POSITION_SCALE;
 		this.maxY = maxY * POSITION_SCALE;
@@ -49,16 +41,17 @@ public abstract class Bot {
 		injectWords();
 	}
 
+	@Override
 	public void setPosition(int x, int y) {
 		this.x = (x * POSITION_SCALE) % maxX;
 		this.y = (y * POSITION_SCALE) % maxY;
 	}
 
 	public int getHP() {
-		return healthpoints;
+		return hp;
 	}
 
-	public void turn(Map map, List<Bot> bots) {
+	public void turn(Map map, List<Actor> bots) {
 		interpreter.turn(TICKCOUNT);
 
 		final Ground ground = map.get(x / POSITION_SCALE, y / POSITION_SCALE);
@@ -82,7 +75,7 @@ public abstract class Bot {
 			if (y >= maxY) y = maxY-1;
 		}
 
-		healthpoints = Math.min(100, healthpoints + 5);
+		hp = Math.min(100, hp + 5);
 		energy = Math.min(100, energy + getEnergyRefill());
 	}
 
@@ -93,28 +86,29 @@ public abstract class Bot {
 	}
 
 	private void damage(int damage) {
-		healthpoints -= damage * getArmorModificator();
+		hp -= damage * getArmorModificator();
 	}
 
-	private void updateSightings(List<Bot> bots, final Ground ground) {
-		sightings = new LinkedList<Bot>();
+	private void updateSightings(List<Actor> bots, final Ground ground) {
+		sightings = new LinkedList<Actor>();
 		target = null;
 		double vrange = (VRANGE_FACTOR * getVisualRange(ground));
 		double srange = (SRANGE_FACTOR * getShootingRange(ground));
 		double min_range = srange;
-		for (Bot b : bots) {
+		for (Actor b : bots) {
+			if (b.type != ActorType.Bot) continue;
 			double distance = distance(b, this);
 			if (distance < vrange) {
 				sightings.add(b);
 			}
 			if (distance < min_range && !b.color.equals(color)) {
-				target = b;
+				target = (Bot) b;
 				min_range = distance;
 			}
 		}
 	}
 
-	private static double distance(Bot a, Bot b) {
+	private static double distance(Actor a, Actor b) {
 		int dx = Math.abs(a.x - b.x);
 		int dy = Math.abs(a.y - b.y);
 		return Math.sqrt(dx*dx + dy*dy);
@@ -174,28 +168,15 @@ public abstract class Bot {
 		});
 	}
 
+	@Override
 	public void paint(Graphics g, Component observer) {
-		BufferedImage rotated_img = rotate(sprite, direction);
-		final int offsetX = (int) (rotated_img.getWidth() / 2.0f);
-		final int offsetY = (int) (rotated_img.getHeight() / 2.0f);
-		g.drawImage(rotated_img, (x/POSITION_SCALE)-offsetX, (y/POSITION_SCALE)-offsetY, observer);
+		super.paint(g, observer);
 
+		/* display shooting? */
 		if (display_shot != null) {
 			g.setColor(Color.WHITE);
 			g.drawLine(x/POSITION_SCALE, y/POSITION_SCALE, display_shot.x/POSITION_SCALE, display_shot.y/POSITION_SCALE);
 			display_shot = null;
 		}
-	}
-
-	public static BufferedImage rotate(BufferedImage img, int direction) {
-		int dir = 360 - direction; /* transformation is backwards */
-		AffineTransform affineTransform = AffineTransform.getRotateInstance(Math.toRadians(dir),
-				img.getWidth() / 2.0,
-				img.getHeight() / 2.0);
-		BufferedImage rotatedImage = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
-		Graphics2D g = (Graphics2D) rotatedImage.getGraphics();
-		g.setTransform(affineTransform);
-		g.drawImage(img, 0, 0, null);
-		return rotatedImage;
 	}
 }
