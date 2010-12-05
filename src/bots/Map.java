@@ -80,7 +80,7 @@ public class Map {
 		final int tileX = x / TILE_SIZE;
 		final int tileY = y / TILE_SIZE;
 
-		return tiles.get(tileY).get(tileX);
+		return tiles.get(tileX).get(tileY);
 	}
 
 	public void paint(Graphics g, Component observer) {
