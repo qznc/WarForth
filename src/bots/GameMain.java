@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Random;
 
 public class GameMain implements Runnable {
+	private static final int SLEEP_TIME = 40;
 	private final GameBoard board;
 	private Component observer;
 	private final Random rnd;
@@ -58,7 +59,7 @@ public class GameMain implements Runnable {
 			}
 
 			try	{
-				Thread.sleep (1);
+				Thread.sleep (SLEEP_TIME);
 			} catch (InterruptedException ex)	{
 				// do nothing
 			}
