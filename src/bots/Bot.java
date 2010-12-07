@@ -3,6 +3,7 @@ package bots;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -23,8 +24,8 @@ public abstract class Bot extends Actor {
 
 	protected boolean moving;
 	protected final Random rnd;
-	private final int maxX;
-	private final int maxY;
+	protected final int maxX;
+	protected final int maxY;
 	private List<Actor> sightings;
 	private Bot target;
 	private int energy = 100;
@@ -169,7 +170,7 @@ public abstract class Bot extends Actor {
 	}
 
 	@Override
-	public void paint(Graphics g, Component observer) {
+	public void paint(Graphics g, Component observer) throws IOException {
 		super.paint(g, observer);
 
 		/* display shooting? */

@@ -5,26 +5,32 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public abstract class Actor {
 	/** internally an actor is more acurate about its position */
 	protected static final int POSITION_SCALE = 10;
 
 	protected ActorType type;
-	protected int x;
-	protected int y;
 	protected final Faction color;
 	protected BufferedImage sprite;
 	protected int direction; /* 0--360 degree */
+	protected int x, y;
 
 	public Actor(ActorType kind, Faction color) {
 		this.type = kind;
 		this.color = color;
 	}
 
-	public abstract void setPosition(int x, int y);
+	public void setPosition(int x, int y) {
+		this.x = x * POSITION_SCALE;
+		this.y = y * POSITION_SCALE;
+	}
 
-	public void paint(Graphics g, Component observer) {
+	/**
+	 * @throws IOException	in subclasses, if graphic data cannot be loaded
+	 */
+	public void paint(Graphics g, Component observer) throws IOException {
 		BufferedImage rotated_img = rotate(sprite, direction);
 		final int offsetX = (int) (rotated_img.getWidth() / 2.0f);
 		final int offsetY = (int) (rotated_img.getHeight() / 2.0f);

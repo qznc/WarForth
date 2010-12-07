@@ -18,58 +18,17 @@ public class Map {
 	private final int height;
 	private final List<List<Ground>> tiles;
 	private final BufferedImage offscreen;
+	private final BufferedImage map_img;
 
 	public Map(String name) throws IOException {
 		URL url = this.getClass().getResource("/resources/maps/"+name);
 		assert (url != null);
-		final BufferedImage map_img = (BufferedImage) new ImageIcon(ImageIO.read(url)).getImage();
+		map_img = (BufferedImage) new ImageIcon(ImageIO.read(url)).getImage();
 
 		width = map_img.getWidth() * TILE_SIZE;
 		height = map_img.getHeight() * TILE_SIZE;
 		tiles = new ArrayList<List<Ground>>(height);
 		offscreen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-		// TODO paint a nicer map!
-		for (int img_x = 0; img_x < map_img.getWidth(); img_x++) {
-			List<Ground> row = new ArrayList<Ground>(width);
-			for (int img_y = 0; img_y < map_img.getWidth(); img_y++) {
-				int pixel = map_img.getRGB(img_y, img_x);
-				row.add(img_y, getGroundByColor(pixel));
-
-				/* paint offscreen image */
-				for (int i = 0; i < TILE_SIZE; i++) {
-					for (int j = 0; j < TILE_SIZE; j++) {
-						offscreen.setRGB(img_x*TILE_SIZE+i, img_y*TILE_SIZE+j, pixel);
-					}
-				}
-			}
-			tiles.add(row);
-		}
-	}
-
-	private Ground getGroundByColor(int pixel) throws IOException {
-		switch (pixel) {
-		case 0xff3a9d3a:
-			return Ground.Grass;
-		case 0xff375954:
-			return Ground.Swamp;
-		case 0xffe8d35e:
-			return Ground.Sand;
-		case 0xff323f05:
-			return Ground.Forest;
-		case 0xff0000ff: /* BLUE */
-			return Ground.Grass;
-		case 0xff787878:
-			return Ground.Rocks;
-		case 0xffffffff: /* WHITE */
-			return Ground.Grass;
-		case 0xffff0000: /* RED */
-			return Ground.Grass;
-		case 0xff3674db:
-			return Ground.Water;
-		default:
-			throw new IOException("Map broken. Unknown color: "+Integer.toHexString(pixel));
-		}
 	}
 
 	public Ground get(final int x, final int y) {
@@ -100,5 +59,59 @@ public class Map {
 
 	public int getHeight() {
 		return height;
+	}
+
+	public void init(Base red, Base blue) {
+		// TODO paint a nicer map!
+		for (int img_x = 0; img_x < map_img.getWidth(); img_x++) {
+			List<Ground> row = new ArrayList<Ground>(width);
+			for (int img_y = 0; img_y < map_img.getWidth(); img_y++) {
+				int pixel = map_img.getRGB(img_y, img_x);
+
+				Ground ground = Ground.Void;
+				switch (pixel) {
+				case 0xff3a9d3a:
+					ground = Ground.Grass;
+					break;
+				case 0xff375954:
+					ground = Ground.Swamp;
+					break;
+				case 0xffe8d35e:
+					ground = Ground.Sand;
+					break;
+				case 0xff323f05:
+					ground = Ground.Forest;
+					break;
+				case 0xff0000ff: /* BLUE */
+					ground = Ground.Grass;
+					blue.setPosition(img_x*TILE_SIZE, img_y*TILE_SIZE);
+					break;
+				case 0xff787878:
+					ground = Ground.Rocks;
+					break;
+				case 0xffffffff: /* WHITE */
+					ground = Ground.Grass;
+					break;
+				case 0xffff0000: /* RED */
+					ground = Ground.Grass;
+					red.setPosition(img_x*TILE_SIZE, img_y*TILE_SIZE);
+					break;
+				case 0xff3674db:
+					ground =  Ground.Water;
+					break;
+				default:
+					throw new RuntimeException("Map broken. Unknown color: "+Integer.toHexString(pixel));
+				}
+				row.add(img_y, ground);
+
+				/* paint offscreen image */
+				for (int i = 0; i < TILE_SIZE; i++) {
+					for (int j = 0; j < TILE_SIZE; j++) {
+						offscreen.setRGB(img_x*TILE_SIZE+i, img_y*TILE_SIZE+j, pixel);
+					}
+				}
+			}
+			tiles.add(row);
+		}
 	}
 }

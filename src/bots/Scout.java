@@ -1,5 +1,7 @@
 package bots;
 
+import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -11,9 +13,17 @@ import javax.swing.ImageIcon;
 
 public class Scout extends Bot {
 
-	public Scout(String program, Faction color, Random rnd, int maxX, int maxY) throws IOException {
+	public Scout(String program, Faction color, Random rnd, int maxX, int maxY) {
 		super(program, color, rnd, maxX, maxY);
+	}
 
+	@Override
+	public void paint(Graphics g, Component observer) throws IOException {
+		if (sprite == null) loadSprite();
+		super.paint(g, observer);
+	}
+
+	private void loadSprite() throws IOException {
 		URL url = null;
 		switch (color) {
 		case Red:

@@ -15,15 +15,15 @@ public class GameMain implements Runnable {
 
 	public GameMain(long random_seed, String red_prog, String blue_prog) throws IOException {
 		rnd = new Random(random_seed);
-		board = new GameBoard(rnd);
+		board = new GameBoard(rnd, red_prog, blue_prog);
 
 		// TODO tech demo style:
-		board.createBot(Faction.Red, red_prog, 100, 100);
-		board.createBot(Faction.Red, red_prog, 300, 480);
-		board.createBot(Faction.Red, red_prog, 200, 10);
-		board.createBot(Faction.Blue, blue_prog, 200, 100);
-		board.createBot(Faction.Blue, blue_prog, 480, 400);
-		board.createBot(Faction.Blue, blue_prog, 20, 300);
+		board.createBot(Faction.Red, 100, 100);
+		board.createBot(Faction.Red, 300, 480);
+		board.createBot(Faction.Red, 200, 10);
+		board.createBot(Faction.Blue, 200, 100);
+		board.createBot(Faction.Blue, 480, 400);
+		board.createBot(Faction.Blue, 20, 300);
 	}
 
 	public void setObserver(Component observer) {
@@ -67,7 +67,7 @@ public class GameMain implements Runnable {
 	}
 
 	@SuppressWarnings("hiding")
-	public void paint(Graphics g, Component observer) {
+	public void paint(Graphics g, Component observer) throws IOException {
 		board.paint(g, observer);
 	}
 }

@@ -14,7 +14,7 @@ public class WarForth extends Applet {
 	":imm begin   COMPILE-POSITION ; " +
 	":imm again   ' branch , COMPILE-POSITION - , ; " +
 	":imm until   ' 0branch , COMPILE-POSITION - , ; " +
-	": sleep 20 begin 1- dup 0= until ; " +
+	": sleep 35 begin 1- dup 0= until ; " +
 	": rotating begin sleep direction 1+ turn! again ; " +
 	"move! " +
 	"360 randBounded turn! " +
@@ -61,6 +61,11 @@ public class WarForth extends Applet {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		game.paint(g, this);
+		try {
+			game.paint(g, this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

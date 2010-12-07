@@ -15,17 +15,27 @@ import java.util.Random;
 
 public class GameBoard {
 	private final List<Actor> things = new ArrayList<Actor>();
+	private final Base red_base;
+	private final Base blue_base;
 	private final Map map;
 	private final Random rnd;
 	private Faction winner = Faction.Neutral;
+	private final String red_prog;
+	private final String blue_prog;
 
-	public GameBoard(Random rnd) throws IOException {
+	public GameBoard(Random rnd, String red_prog, String blue_prog) throws IOException {
+		this.red_prog = red_prog;
+		this.blue_prog = blue_prog;
 		this.rnd = rnd;
 
+		red_base = new Base(Faction.Red);
+		blue_base = new Base(Faction.Blue);
+
 		map = new Map("first.bmp");
+		map.init(red_base, blue_base);
 	}
 
-	public void paint(Graphics g, Component observer) {
+	public void paint(Graphics g, Component observer) throws IOException {
 		/* draw offscreen */
 		Image img = map.cloneImage();
 		Graphics ig = img.getGraphics();
@@ -75,6 +85,9 @@ public class GameBoard {
 			bot.turn(map, things);
 		}
 
+		red_base.turn(this);
+		blue_base.turn(this);
+
 		removeDead();
 
 		checkWin();
@@ -113,8 +126,11 @@ public class GameBoard {
 		}
 	}
 
-	public void createBot(Faction color, String program, int x, int y) throws IOException {
-		Bot b = new Scout(program, color, rnd, map.getWidth(), map.getHeight());
+	public void createBot(Faction color, int x, int y) {
+		String prog = null;
+		if (color == Faction.Red) prog = red_prog;
+		if (color == Faction.Blue) prog = blue_prog;
+		Bot b = new Scout(prog, color, rnd, map.getWidth(), map.getHeight());
 		b.setPosition(x,y);
 		things.add(b);
 	}
