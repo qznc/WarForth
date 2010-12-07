@@ -84,7 +84,7 @@ public class Map {
 					break;
 				case 0xff0000ff: /* BLUE */
 					ground = Ground.Grass;
-					blue.setPosition(img_x*TILE_SIZE, img_y*TILE_SIZE);
+					blue.setPosition(img_x*TILE_SIZE+(TILE_SIZE/2), img_y*TILE_SIZE+(TILE_SIZE/2));
 					break;
 				case 0xff787878:
 					ground = Ground.Rocks;
@@ -94,7 +94,7 @@ public class Map {
 					break;
 				case 0xffff0000: /* RED */
 					ground = Ground.Grass;
-					red.setPosition(img_x*TILE_SIZE, img_y*TILE_SIZE);
+					red.setPosition(img_x*TILE_SIZE+(TILE_SIZE/2), img_y*TILE_SIZE+(TILE_SIZE/2));
 					break;
 				case 0xff3674db:
 					ground =  Ground.Water;
