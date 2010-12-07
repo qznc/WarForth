@@ -3,7 +3,7 @@ package bots;
 import java.awt.Component;
 import java.awt.Graphics;
 
-public class Base extends Actor {
+public class Base extends ColoredActor {
 	private static final int BUILD_COMPLETE = 1000;
 	private int built = 0;
 

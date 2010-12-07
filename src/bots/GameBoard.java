@@ -14,7 +14,7 @@ import java.util.Random;
 
 
 public class GameBoard {
-	private final List<Actor> things = new ArrayList<Actor>();
+	private final List<ColoredActor> things = new ArrayList<ColoredActor>();
 	private final Base red_base;
 	private final Base blue_base;
 	private final Map map;
@@ -79,7 +79,7 @@ public class GameBoard {
 		/* shuffle order for fairness */
 		Collections.shuffle(things, rnd);
 
-		for (Actor a : things) {
+		for (ColoredActor a : things) {
 			if (a.type != ActorType.Bot) continue;
 			final Bot bot = (Bot) a;
 			bot.turn(map, things);
@@ -96,7 +96,7 @@ public class GameBoard {
 	private void checkWin() {
 		boolean red_alive = false;
 		boolean blue_alive = false;
-		for (Actor a : things) {
+		for (ColoredActor a : things) {
 			if (a.color.equals(Faction.Red)) red_alive = true;
 			if (a.color.equals(Faction.Blue)) blue_alive = true;
 			if (red_alive && blue_alive) break;
@@ -114,7 +114,7 @@ public class GameBoard {
 
 	private void removeDead() {
 		List<Bot> dead = new LinkedList<Bot>();
-		for (Actor a : things) {
+		for (ColoredActor a : things) {
 			if (a.type != ActorType.Bot) continue;
 			final Bot bot = (Bot) a;
 			if (bot.getHP() <= 0) {

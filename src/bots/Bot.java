@@ -13,7 +13,7 @@ import forth2.InterpreterState;
 import forth2.words.IntegerWord;
 import forth2.words.Word;
 
-public abstract class Bot extends Actor {
+public abstract class Bot extends ColoredActor {
 	private static final int TICKCOUNT = 100;
 	private static final double VRANGE_FACTOR = 80.0 * POSITION_SCALE;
 	private static final double SRANGE_FACTOR = 120.0 * POSITION_SCALE;
@@ -52,12 +52,12 @@ public abstract class Bot extends Actor {
 		return hp;
 	}
 
-	public void turn(Map map, List<Actor> bots) {
+	public void turn(Map map, List<ColoredActor> things) {
 		interpreter.turn(TICKCOUNT);
 
 		final Ground ground = map.get(x / POSITION_SCALE, y / POSITION_SCALE);
 
-		updateSightings(bots, ground);
+		updateSightings(things, ground);
 
 		if (target != null && energy >= 100) {
 			shoot();
@@ -90,13 +90,13 @@ public abstract class Bot extends Actor {
 		hp -= damage * getArmorModificator();
 	}
 
-	private void updateSightings(List<Actor> bots, final Ground ground) {
+	private void updateSightings(List<ColoredActor> things, final Ground ground) {
 		sightings = new LinkedList<Actor>();
 		target = null;
 		double vrange = (VRANGE_FACTOR * getVisualRange(ground));
 		double srange = (SRANGE_FACTOR * getShootingRange(ground));
 		double min_range = srange;
-		for (Actor b : bots) {
+		for (ColoredActor b : things) {
 			if (b.type != ActorType.Bot) continue;
 			double distance = distance(b, this);
 			if (distance < vrange) {

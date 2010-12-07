@@ -11,16 +11,9 @@ public abstract class Actor {
 	/** internally an actor is more acurate about its position */
 	protected static final int POSITION_SCALE = 10;
 
-	protected ActorType type;
-	protected final Faction color;
 	protected BufferedImage sprite;
 	protected int direction; /* 0--360 degree */
 	protected int x, y;
-
-	public Actor(ActorType kind, Faction color) {
-		this.type = kind;
-		this.color = color;
-	}
 
 	public void setPosition(int x, int y) {
 		this.x = x * POSITION_SCALE;
