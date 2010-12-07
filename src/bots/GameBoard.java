@@ -96,21 +96,14 @@ public class GameBoard {
 	}
 
 	private void checkWin() {
-		boolean red_alive = false;
-		boolean blue_alive = false;
-		for (ColoredActor a : things) {
-			if (a.color.equals(Faction.Red)) red_alive = true;
-			if (a.color.equals(Faction.Blue)) blue_alive = true;
-			if (red_alive && blue_alive) break;
-		}
-		if (!red_alive) {
-			winner = Faction.Blue;
-		}
-		if (!blue_alive) {
+		if (red_base.getHP() <= 0) {
+			if (blue_base.getHP() <= 0) {
+				winner = Faction.Nobody;
+			} else {
+				winner = Faction.Blue;
+			}
+		} else if (blue_base.getHP() <= 0) {
 			winner = Faction.Red;
-		}
-		if (!blue_alive && !red_alive) {
-			winner = Faction.Nobody;
 		}
 	}
 
