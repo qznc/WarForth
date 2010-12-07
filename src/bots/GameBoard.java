@@ -41,7 +41,13 @@ public class GameBoard {
 		/* draw offscreen */
 		Image img = map.cloneImage();
 		Graphics ig = img.getGraphics();
-		for (Actor a : things) {
+
+		/* paint bases first, so units are on top */
+		red_base.paint(ig, observer);
+		blue_base.paint(ig, observer);
+
+		for (ColoredActor a : things) {
+			if (a.type == ActorType.Base) continue;
 			a.paint(ig, observer);
 		}
 

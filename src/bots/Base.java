@@ -1,7 +1,9 @@
 package bots;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.io.IOException;
 
 public class Base extends ColoredActor {
 	private static final int BUILD_COMPLETE = 1000;
@@ -12,8 +14,21 @@ public class Base extends ColoredActor {
 	}
 
 	@Override
-	public void paint(Graphics g, Component observer) {
-//		TODO
+	public void paint(Graphics g, Component observer) throws IOException {
+		//super.paint(g, observer); sprite necessary!
+		switch (color) {
+		case Blue:
+			g.setColor(Color.BLUE);
+			break;
+		case Red:
+			g.setColor(Color.RED);
+			break;
+		default:
+			break;
+		}
+		if (hp <= 0) g.setColor(Color.GRAY);
+		final int radius = 8;
+		g.fillOval(x/POSITION_SCALE - radius, y/POSITION_SCALE - radius, radius*2, radius*2);
 	}
 
 	public void turn(GameBoard board) {
