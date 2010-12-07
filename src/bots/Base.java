@@ -25,4 +25,9 @@ public class Base extends ColoredActor {
 		board.createBot(color, x/POSITION_SCALE, y/POSITION_SCALE);
 		built = 0;
 	}
+
+	@Override
+	protected float getArmorModificator() {
+		return 0.5f; /* only half the damage */
+	}
 }

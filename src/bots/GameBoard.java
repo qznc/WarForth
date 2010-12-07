@@ -29,7 +29,9 @@ public class GameBoard {
 		this.rnd = rnd;
 
 		red_base = new Base(Faction.Red);
+		things.add(red_base);
 		blue_base = new Base(Faction.Blue);
+		things.add(blue_base);
 
 		map = new Map("first.bmp");
 		map.init(red_base, blue_base);
@@ -113,15 +115,13 @@ public class GameBoard {
 	}
 
 	private void removeDead() {
-		List<Bot> dead = new LinkedList<Bot>();
+		List<ColoredActor> dead = new LinkedList<ColoredActor>();
 		for (ColoredActor a : things) {
-			if (a.type != ActorType.Bot) continue;
-			final Bot bot = (Bot) a;
-			if (bot.getHP() <= 0) {
-				dead.add(bot);
+			if (a.getHP() <= 0) {
+				dead.add(a);
 			}
 		}
-		for (Bot d : dead) {
+		for (ColoredActor d : dead) {
 			things.remove(d);
 		}
 	}
@@ -130,7 +130,7 @@ public class GameBoard {
 		String prog = null;
 		if (color == Faction.Red) prog = red_prog;
 		if (color == Faction.Blue) prog = blue_prog;
-		Bot b = new Scout(prog, color, rnd, map.getWidth(), map.getHeight());
+		ColoredActor b = new Scout(prog, color, rnd, map.getWidth(), map.getHeight());
 		b.setPosition(x,y);
 		things.add(b);
 	}

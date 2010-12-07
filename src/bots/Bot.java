@@ -20,17 +20,15 @@ public abstract class Bot extends ColoredActor {
 	private static final double SPEED_FACTOR = 10.0;
 
 	private final Interpreter interpreter;
-
+	private List<Actor> sightings;
+	private ColoredActor target;
+	private int energy = 100;
+	private ColoredActor display_shot;
 
 	protected boolean moving;
 	protected final Random rnd;
 	protected final int maxX;
 	protected final int maxY;
-	private List<Actor> sightings;
-	private Bot target;
-	private int energy = 100;
-	private int hp = 100;
-	private Bot display_shot;
 
 	public Bot(String program, Faction color, Random rnd, int maxX, int maxY) {
 		super(ActorType.Bot, color);
@@ -46,10 +44,6 @@ public abstract class Bot extends ColoredActor {
 	public void setPosition(int x, int y) {
 		this.x = Math.min(maxX, (x * POSITION_SCALE));
 		this.y = Math.min(maxY, (y * POSITION_SCALE));
-	}
-
-	public int getHP() {
-		return hp;
 	}
 
 	public void turn(Map map, List<ColoredActor> things) {
@@ -86,10 +80,6 @@ public abstract class Bot extends ColoredActor {
 		display_shot = target;
 	}
 
-	private void damage(int damage) {
-		hp -= damage * getArmorModificator();
-	}
-
 	private void updateSightings(List<ColoredActor> things, final Ground ground) {
 		sightings = new LinkedList<Actor>();
 		target = null;
@@ -97,13 +87,12 @@ public abstract class Bot extends ColoredActor {
 		double srange = (SRANGE_FACTOR * getShootingRange(ground));
 		double min_range = srange;
 		for (ColoredActor b : things) {
-			if (b.type != ActorType.Bot) continue;
 			double distance = distance(b, this);
 			if (distance < vrange) {
 				sightings.add(b);
 			}
 			if (distance < min_range && !b.color.equals(color)) {
-				target = (Bot) b;
+				target = b;
 				min_range = distance;
 			}
 		}
@@ -120,8 +109,6 @@ public abstract class Bot extends ColoredActor {
 	protected abstract double getShootingRange(Ground ground);
 	protected abstract int getEnergyRefill();
 	protected abstract int getDamage();
-	protected abstract float getArmorModificator();
-
 	private void injectWords() {
 		interpreter.injectWord(new Word("move!") {
 			@Override
