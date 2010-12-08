@@ -1,0 +1,8 @@
+:imm begin   COMPILE-POSITION ;
+:imm again   ' branch , COMPILE-POSITION - , ;
+:imm until   ' 0branch , COMPILE-POSITION - , ;
+: sleep 35 begin 1- dup 0= until ;
+: rotating begin sleep direction 1+ turn! again ;
+move!
+360 randBounded turn!
+rotating
