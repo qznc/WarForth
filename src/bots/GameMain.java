@@ -54,8 +54,13 @@ public class GameMain implements Runnable {
 			if (exit_now) return;
 
 			if (running) {
-				board.turn();
+				boolean finished = board.turn();
 				if (observer != null) observer.repaint();
+				if (finished) {
+					exit_now = true;
+					running = false;
+					continue;
+				}
 			}
 
 			try	{

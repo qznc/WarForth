@@ -83,7 +83,15 @@ public class GameBoard {
 		}
 	}
 
-	public void turn() {
+	/**
+	 * @return	whether the game is finished
+	 */
+	public boolean turn() {
+		checkWin();
+		if (winner != Faction.Neutral) {
+			return true;
+		}
+
 		/* shuffle order for fairness */
 		Collections.shuffle(things, rnd);
 
@@ -97,8 +105,7 @@ public class GameBoard {
 		blue_base.turn(this);
 
 		removeDead();
-
-		checkWin();
+		return false;
 	}
 
 	private void checkWin() {
