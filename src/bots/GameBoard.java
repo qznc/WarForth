@@ -140,4 +140,8 @@ public class GameBoard {
 		b.setPosition(x,y);
 		things.add(b);
 	}
+
+	public Faction getWinner() {
+		return winner;
+	}
 }

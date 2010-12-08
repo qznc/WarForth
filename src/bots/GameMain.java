@@ -10,7 +10,7 @@ public class GameMain implements Runnable {
 	private final GameBoard board;
 	private Component observer;
 	private final Random rnd;
-	private boolean running = false;
+	private boolean thread_running = false;
 	private boolean exit_now = false;
 
 	public GameMain(long random_seed, String red_prog, String blue_prog) throws IOException {
@@ -31,20 +31,20 @@ public class GameMain implements Runnable {
 	}
 
 	public void start() {
-		if (running) return;
+		if (thread_running) return;
 
-		running = true;
+		thread_running = true;
 		Thread t = new Thread(this);
 		t.start();
 	}
 
 	public void stop() {
-		running = false;
+		thread_running = false;
 	}
 
 
 	public void destroy() {
-		running = false;
+		thread_running = false;
 		exit_now = true;
 	}
 
@@ -53,20 +53,33 @@ public class GameMain implements Runnable {
 		while (true) {
 			if (exit_now) return;
 
-			if (running) {
+			if (thread_running) {
 				boolean finished = board.turn();
 				if (observer != null) observer.repaint();
 				if (finished) {
 					exit_now = true;
-					running = false;
-					continue;
+					thread_running = false;
+					return;
 				}
 			}
 
 			try	{
 				Thread.sleep (SLEEP_TIME);
 			} catch (InterruptedException ex)	{
-				// do nothing
+				return;
+			}
+		}
+	}
+
+	public Faction getWinner() {
+		return board.getWinner();
+	}
+
+	public Faction runNonthreaded() {
+		while (true) {
+			boolean finished = board.turn();
+			if (finished) {
+				return board.getWinner();
 			}
 		}
 	}
