@@ -1,8 +1,8 @@
-package forth2.tests;
+package forth.tests;
 
 import org.junit.Test;
 
-import forth2.Interpreter;
+import forth.Interpreter;
 
 
 public class ParserTests {

@@ -1,9 +1,9 @@
-package forth2.words;
+package forth.words;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import forth2.InterpreterState;
+import forth.InterpreterState;
 
 public class TopLevel extends UserDefinedWord {
 	private final List<String> word_strings = new ArrayList<String>();

@@ -1,12 +1,12 @@
-package forth2;
+package forth;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import forth2.words.Builtins;
-import forth2.words.UserDefinedWord;
-import forth2.words.Word;
+import forth.words.Builtins;
+import forth.words.UserDefinedWord;
+import forth.words.Word;
 
 public class InterpreterState {
 	public boolean compiling = false;

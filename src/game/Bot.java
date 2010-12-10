@@ -1,4 +1,4 @@
-package bots;
+package game;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -8,10 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import forth2.Interpreter;
-import forth2.InterpreterState;
-import forth2.words.IntegerWord;
-import forth2.words.Word;
+import forth.Interpreter;
+import forth.InterpreterState;
+import forth.words.IntegerWord;
+import forth.words.Word;
 
 public abstract class Bot extends ColoredActor {
 	private static final int TICKCOUNT = 100;

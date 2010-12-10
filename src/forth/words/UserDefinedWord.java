@@ -1,10 +1,10 @@
-package forth2.words;
+package forth.words;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import forth2.Frame;
-import forth2.InterpreterState;
+import forth.Frame;
+import forth.InterpreterState;
 
 public class UserDefinedWord extends Word {
 	public List<Word> content;

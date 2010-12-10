@@ -1,4 +1,4 @@
-package bots;
+package game;
 
 import java.awt.Component;
 import java.awt.Graphics;

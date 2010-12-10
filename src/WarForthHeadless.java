@@ -1,9 +1,10 @@
+import game.Faction;
+import game.GameMain;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import bots.Faction;
-import bots.GameMain;
 
 
 public class WarForthHeadless {

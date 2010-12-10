@@ -1,6 +1,6 @@
-package forth2.words;
+package forth.words;
 
-import forth2.InterpreterState;
+import forth.InterpreterState;
 
 abstract public class Word {
 	protected final String name;

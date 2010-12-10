@@ -1,7 +1,7 @@
-package forth2.words;
+package forth.words;
 
-import forth2.Frame;
-import forth2.InterpreterState;
+import forth.Frame;
+import forth.InterpreterState;
 
 public class UserDefinedImmediateWord extends UserDefinedWord {
 	private final Word immediate_return = new Word("imm ;") {

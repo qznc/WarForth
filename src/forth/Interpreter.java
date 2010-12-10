@@ -1,7 +1,7 @@
-package forth2;
+package forth;
 
-import forth2.words.TopLevel;
-import forth2.words.Word;
+import forth.words.TopLevel;
+import forth.words.Word;
 
 public class Interpreter {
 	private final InterpreterState state;

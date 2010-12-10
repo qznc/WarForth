@@ -1,4 +1,4 @@
-package bots;
+package game;
 
 public abstract class ColoredActor extends Actor {
 	protected ActorType type;

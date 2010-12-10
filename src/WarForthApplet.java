@@ -1,11 +1,12 @@
 
 
+import game.GameMain;
+
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
 
-import bots.GameMain;
 
 public class WarForthApplet extends Applet {
 	private static final long serialVersionUID = -4662920398000709556L;

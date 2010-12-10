@@ -1,4 +1,4 @@
-package bots;
+package game;
 
 public enum Faction {
 	Neutral,

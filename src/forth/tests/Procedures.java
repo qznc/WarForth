@@ -1,12 +1,12 @@
-package forth2.tests;
+package forth.tests;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import forth2.Interpreter;
-import forth2.InterpreterState;
-import forth2.words.Word;
+import forth.Interpreter;
+import forth.InterpreterState;
+import forth.words.Word;
 
 
 public class Procedures {

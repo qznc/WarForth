@@ -1,6 +1,6 @@
-package forth2;
+package forth;
 
-import forth2.words.Word;
+import forth.words.Word;
 
 public class Frame {
 	public Word word;

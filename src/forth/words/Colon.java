@@ -1,7 +1,7 @@
-package forth2.words;
+package forth.words;
 
-import forth2.Frame;
-import forth2.InterpreterState;
+import forth.Frame;
+import forth.InterpreterState;
 
 /**
  * We need two different words for normal and immediate compilation,

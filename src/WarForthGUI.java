@@ -1,3 +1,5 @@
+import game.GameMain;
+
 import java.awt.Canvas;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -5,7 +7,6 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import bots.GameMain;
 
 
 public class WarForthGUI extends Canvas {
