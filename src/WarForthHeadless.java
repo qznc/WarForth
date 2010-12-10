@@ -6,7 +6,7 @@ import bots.Faction;
 import bots.GameMain;
 
 
-public class Headless {
+public class WarForthHeadless {
 	private static final String nl = System.getProperty("line.separator");
 	private static final String USAGE = "" +
 			"usage: <exec> <random seed> <red program path> <blue program path>";
@@ -15,6 +15,14 @@ public class Headless {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		GameMain game = createGame(args);
+		if (game == null) return;
+
+		Faction winner = game.runNonthreaded();
+		System.out.println("Winner: "+winner);
+	}
+
+	public static GameMain createGame(String[] args) {
 		int random_seed = 1337;
 		String red_prog = null;
 		String blue_prog = null;
@@ -26,11 +34,11 @@ public class Headless {
 				blue_prog = readProg(args[2]);
 			} catch (IOException e) {
 				e.printStackTrace();
-				return;
+				return null;
 			}
 		} else {
 			System.out.println(USAGE);
-			return;
+			return null;
 		}
 
 		GameMain game;
@@ -39,11 +47,9 @@ public class Headless {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return;
+			return null;
 		}
-
-		Faction winner = game.runNonthreaded();
-		System.out.println("Winner: "+winner);
+		return game;
 	}
 
 	private static String readProg(String path) throws IOException {

@@ -30,6 +30,9 @@ public class GameMain implements Runnable {
 		this.observer = observer;
 	}
 
+	/**
+	 * Start this game in its own Thread
+	 */
 	public void start() {
 		if (thread_running) return;
 
@@ -48,6 +51,9 @@ public class GameMain implements Runnable {
 		exit_now = true;
 	}
 
+	/**
+	 * The game main loop with Observers/GUIs
+	 */
 	@Override
 	public void run() {
 		while (true) {
@@ -75,6 +81,10 @@ public class GameMain implements Runnable {
 		return board.getWinner();
 	}
 
+	/**
+	 * The games main loop without observers
+	 * @return	the winner
+	 */
 	public Faction runNonthreaded() {
 		while (true) {
 			boolean finished = board.turn();
@@ -84,8 +94,7 @@ public class GameMain implements Runnable {
 		}
 	}
 
-	@SuppressWarnings("hiding")
-	public void paint(Graphics g, Component observer) throws IOException {
-		board.paint(g, observer);
+	public void paint(Graphics g, Component obs) throws IOException {
+		board.paint(g, obs);
 	}
 }
