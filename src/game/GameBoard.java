@@ -136,8 +136,7 @@ public class GameBoard {
 		String prog = null;
 		if (color == Faction.Red) prog = red_prog;
 		if (color == Faction.Blue) prog = blue_prog;
-		ColoredActor b = new Scout(prog, color, rnd, map.getWidth(), map.getHeight());
-		b.setPosition(x,y);
+		ColoredActor b = new Scout(prog, color, rnd, map.getWidth(), map.getHeight(),x,y);
 		things.add(b);
 	}
 

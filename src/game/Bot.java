@@ -20,30 +20,31 @@ public abstract class Bot extends ColoredActor {
 	private static final double SPEED_FACTOR = 10.0;
 
 	private final Interpreter interpreter;
-	private List<Actor> sightings;
+	List<ColoredActor> sightings;
 	private ColoredActor target;
 	private int energy = 100;
 	private ColoredActor display_shot;
+
+	List<ColoredActor> current_sightings;
+	ColoredActor current_sight;
 
 	protected boolean moving;
 	protected final Random rnd;
 	protected final int maxX;
 	protected final int maxY;
+	final int startX;
+	final int startY;
 
-	public Bot(String program, Faction color, Random rnd, int maxX, int maxY) {
+	public Bot(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y) {
 		super(ActorType.Bot, color);
 		this.rnd = rnd;
 		this.maxX = maxX * POSITION_SCALE;
 		this.maxY = maxY * POSITION_SCALE;
+		this.startX = this.x = Math.min(maxX, (x * POSITION_SCALE));
+		this.startY = this.y = Math.min(maxY, (y * POSITION_SCALE));
 
 		interpreter = new Interpreter(program);
 		injectWords();
-	}
-
-	@Override
-	public void setPosition(int x, int y) {
-		this.x = Math.min(maxX, (x * POSITION_SCALE));
-		this.y = Math.min(maxY, (y * POSITION_SCALE));
 	}
 
 	public void turn(Map map, List<ColoredActor> things) {
@@ -81,7 +82,7 @@ public abstract class Bot extends ColoredActor {
 	}
 
 	private void updateSightings(List<ColoredActor> things, final Ground ground) {
-		sightings = new LinkedList<Actor>();
+		sightings = new LinkedList<ColoredActor>();
 		target = null;
 		double vrange = (VRANGE_FACTOR * getVisualRange(ground));
 		double srange = (SRANGE_FACTOR * getShootingRange(ground));
@@ -109,6 +110,7 @@ public abstract class Bot extends ColoredActor {
 	protected abstract double getShootingRange(Ground ground);
 	protected abstract int getEnergyRefill();
 	protected abstract int getDamage();
+
 	private void injectWords() {
 		interpreter.injectWord(new Word("move!") {
 			@Override
@@ -135,10 +137,13 @@ public abstract class Bot extends ColoredActor {
 				state.stack.push(new IntegerWord(direction));
 			}
 		});
-		interpreter.injectWord(new Word("color") {
+		interpreter.injectWord(new Word("position") {
 			@Override
 			public void interpret(InterpreterState state) {
-				state.stack.push(new IntegerWord(color.ordinal()));
+				int xpos = (x - startX) / POSITION_SCALE;
+				int ypos = (y - startY) / POSITION_SCALE;
+				state.stack.push(new IntegerWord(xpos));
+				state.stack.push(new IntegerWord(ypos));
 			}
 		});
 		interpreter.injectWord(new Word("rand") {
@@ -152,6 +157,50 @@ public abstract class Bot extends ColoredActor {
 			public void interpret(InterpreterState state) {
 				IntegerWord a = (IntegerWord) state.stack.pop();
 				state.stack.push(new IntegerWord(rnd.nextInt(a.value)));
+			}
+		});
+		interpreter.injectWord(new Word("scan!") {
+			@Override
+			public void interpret(InterpreterState state) {
+				current_sightings = sightings;
+				current_sight = null; /* precaution */
+			}
+		});
+		interpreter.injectWord(new Word("scanNext!") {
+			@Override
+			public void interpret(InterpreterState state) {
+				if (current_sightings.size() == 0) {
+					/* no next available */
+					state.stack.push(new IntegerWord(0));
+					return;
+				}
+				current_sight = current_sightings.remove(current_sightings.size()-1);
+				state.stack.push(new IntegerWord(1)); /* next available now */
+			}
+		});
+		interpreter.injectWord(new Word("scannedColor") {
+			@Override
+			public void interpret(InterpreterState state) {
+				int is_enemy = -1;
+				if (current_sight.color == Faction.Neutral) {
+					is_enemy = 2; /* neutral */
+				} else if (current_sight.color != color) {
+					is_enemy = 0; /* enemy color (also false) */
+				} else {
+					assert (current_sight.color == color);
+					is_enemy = 1; /* own color */
+				}
+				assert is_enemy >= 0;
+				state.stack.push(new IntegerWord(is_enemy));
+			}
+		});
+		interpreter.injectWord(new Word("scannedPosition") {
+			@Override
+			public void interpret(InterpreterState state) {
+				int xpos = (current_sight.x - startX) / POSITION_SCALE;
+				int ypos = (current_sight.y - startY) / POSITION_SCALE;
+				state.stack.push(new IntegerWord(xpos));
+				state.stack.push(new IntegerWord(ypos));
 			}
 		});
 	}
