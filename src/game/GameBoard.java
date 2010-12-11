@@ -47,7 +47,7 @@ public class GameBoard {
 		blue_base.paint(ig, observer);
 
 		for (ColoredActor a : things) {
-			if (a.type == ActorType.Base) continue;
+			if (a.type == ActorType.Base) continue; /* bases already painted */
 			a.paint(ig, observer);
 		}
 
@@ -136,6 +136,8 @@ public class GameBoard {
 		String prog = null;
 		if (color == Faction.Red) prog = red_prog;
 		if (color == Faction.Blue) prog = blue_prog;
+		assert x < map.getWidth();
+		assert y < map.getHeight();
 		ColoredActor b = new Scout(prog, color, rnd, map.getWidth(), map.getHeight(),x,y);
 		things.add(b);
 	}

@@ -1,0 +1,19 @@
+:imm begin   COMPILE-POSITION ;
+:imm again   ' branch , COMPILE-POSITION - , ;
+:imm until   ' 0branch , COMPILE-POSITION - , ;
+:imm if    ' 0branch , COMPILE-POSITION 0 , ;
+:imm else  ' branch , COMPILE-POSITION 0 ,
+	swap dup COMPILE-POSITION swap - swap ! ;
+:imm then  dup COMPILE-POSITION swap - swap ! ;
+
+: sleep 35 begin 1- dup 0= until ;
+: changeDirection scan!
+begin scanNext! dup if
+	scannedColor 0= if
+		scannedPosition aim!
+	then then
+until ;
+: main begin changeDirection sleep again ;
+move!
+360 randBounded turn!
+main

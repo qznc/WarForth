@@ -133,6 +133,16 @@ public abstract class Bot extends ColoredActor {
 				direction = a.value;
 			}
 		});
+		interpreter.injectWord(new Word("aim!") {
+			@Override
+			public void interpret(InterpreterState state) {
+				final int ty = startY + ((IntegerWord) state.stack.pop()).value * POSITION_SCALE;
+				final int tx = startX + ((IntegerWord) state.stack.pop()).value * POSITION_SCALE;
+				final double theta = Math.atan2(y - ty, tx - x);
+				direction = (int) Math.round(Math.toDegrees(theta));
+				//System.out.println("From "+x+","+y+" to "+tx+","+ty+" => direction "+direction);
+			}
+		});
 		interpreter.injectWord(new Word("direction") {
 			@Override
 			public void interpret(InterpreterState state) {
