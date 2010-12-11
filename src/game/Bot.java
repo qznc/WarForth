@@ -40,8 +40,10 @@ public abstract class Bot extends ColoredActor {
 		this.rnd = rnd;
 		this.maxX = maxX * POSITION_SCALE;
 		this.maxY = maxY * POSITION_SCALE;
-		this.startX = this.x = Math.min(maxX, (x * POSITION_SCALE));
-		this.startY = this.y = Math.min(maxY, (y * POSITION_SCALE));
+		assert x <= maxX;
+		assert y <= maxY;
+		this.startX = this.x = Math.min(this.maxX, (x * POSITION_SCALE));
+		this.startY = this.y = Math.min(this.maxY, (y * POSITION_SCALE));
 
 		interpreter = new Interpreter(program);
 		injectWords();
