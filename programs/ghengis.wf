@@ -6,7 +6,7 @@
 	swap dup COMPILE-POSITION swap - swap ! ;
 :imm then  dup COMPILE-POSITION swap - swap ! ;
 
-: sleep 35 begin 1- dup 0= until ;
+: sleep 80 begin 1- dup 0= until ;
 : changeDirection scan!
 begin scanNext! dup if
 	scannedColor 0= if

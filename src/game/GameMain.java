@@ -16,14 +16,6 @@ public class GameMain implements Runnable {
 	public GameMain(long random_seed, String red_prog, String blue_prog) throws IOException {
 		rnd = new Random(random_seed);
 		board = new GameBoard(rnd, red_prog, blue_prog);
-
-		// TODO tech demo style:
-		board.createBot(Faction.Red, 100, 100);
-		board.createBot(Faction.Red, 300, 480);
-		board.createBot(Faction.Red, 200, 10);
-		board.createBot(Faction.Blue, 200, 100);
-		board.createBot(Faction.Blue, 480, 400);
-		board.createBot(Faction.Blue, 20, 300);
 	}
 
 	public void setObserver(Component observer) {

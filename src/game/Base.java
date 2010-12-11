@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Base extends ColoredActor {
 	private static final int BUILD_COMPLETE = 1000;
-	private int built = 0;
+	private int built = 999;
 
 	public Base(Faction color) {
 		super(ActorType.Base, color);
