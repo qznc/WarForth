@@ -34,6 +34,7 @@ public abstract class Bot extends ColoredActor {
 	protected final int maxY;
 	final int startX;
 	final int startY;
+	private Map map_cache;
 
 	public Bot(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y) {
 		super(ActorType.Bot, color);
@@ -50,6 +51,8 @@ public abstract class Bot extends ColoredActor {
 	}
 
 	public void turn(Map map, List<ColoredActor> things) {
+		this.map_cache = map;
+
 		interpreter.turn(TICKCOUNT);
 
 		final Ground ground = map.get(x / POSITION_SCALE, y / POSITION_SCALE);
@@ -60,6 +63,14 @@ public abstract class Bot extends ColoredActor {
 			shoot();
 		}
 
+		move(ground);
+
+		hp = Math.min(100, hp + 5);
+		energy = Math.min(100, energy + getEnergyRefill());
+		map_cache = null;
+	}
+
+	private void move(final Ground ground) {
 		if (moving) {
 			double speed = SPEED_FACTOR * getSpeed(ground);
 			final int dx = (int) (Math.round(speed * Math.cos(Math.toRadians(direction))));
@@ -72,9 +83,6 @@ public abstract class Bot extends ColoredActor {
 			if (x >= maxX) x = maxX-1;
 			if (y >= maxY) y = maxY-1;
 		}
-
-		hp = Math.min(100, hp + 5);
-		energy = Math.min(100, energy + getEnergyRefill());
 	}
 
 	private void shoot() {
@@ -215,6 +223,24 @@ public abstract class Bot extends ColoredActor {
 				state.stack.push(new IntegerWord(ypos));
 			}
 		});
+
+		interpreter.injectWord(new Word("look") {
+			@Override
+			public void interpret(InterpreterState state) {
+				int range = POSITION_SCALE * ((IntegerWord) state.stack.pop()).value;
+				if (range > getVisualRange(getGround(x,y))) {
+					state.stack.push(new IntegerWord(Ground.Unknown.ordinal()));
+					return;
+				}
+				final int dx = (int) (Math.round(range * Math.cos(Math.toRadians(direction))));
+				final int dy = (int) (Math.round(range * Math.sin(Math.toRadians(direction))));
+				state.stack.push(new IntegerWord(getGround(x+dx, y+dy).ordinal()));
+			}
+		});
+	}
+
+	protected Ground getGround(int bx, int by) {
+		return map_cache.get(bx/POSITION_SCALE, by/POSITION_SCALE);
 	}
 
 	@Override
