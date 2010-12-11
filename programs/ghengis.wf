@@ -10,8 +10,11 @@
 : changeDirection scan!
 begin scanNext! dup if
 	scannedColor 0= if
-		scannedPosition aim!
+		scannedPosition aim! return
 	then then
+	20 look 1 = if
+		360 randBounded turn!
+	then
 until ;
 : main begin changeDirection sleep again ;
 move!

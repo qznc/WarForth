@@ -228,13 +228,15 @@ public abstract class Bot extends ColoredActor {
 			@Override
 			public void interpret(InterpreterState state) {
 				int range = POSITION_SCALE * ((IntegerWord) state.stack.pop()).value;
-				if (range > getVisualRange(getGround(x,y))) {
+				if (range > VRANGE_FACTOR * getVisualRange(getGround(x,y))) {
 					state.stack.push(new IntegerWord(Ground.Unknown.ordinal()));
 					return;
 				}
 				final int dx = (int) (Math.round(range * Math.cos(Math.toRadians(direction))));
 				final int dy = (int) (Math.round(range * Math.sin(Math.toRadians(direction))));
-				state.stack.push(new IntegerWord(getGround(x+dx, y+dy).ordinal()));
+				Ground g = getGround(x+dx, y-dy);
+				//System.out.println("sees "+g+" ("+g.ordinal()+") at "+(x+dx)+","+(y+dy));
+				state.stack.push(new IntegerWord(g.ordinal()));
 			}
 		});
 	}

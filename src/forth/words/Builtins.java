@@ -33,7 +33,12 @@ public final class Builtins {
 				state.compiling = true;
 			}
 		});
-
+		s.insert(new Word("return") {
+			@Override
+			public void interpret(InterpreterState state) {
+				state.call_stack.pop();
+			}
+		});
 		s.insert(new Word(";") {
 			@Override
 			public void interpret(InterpreterState state) {

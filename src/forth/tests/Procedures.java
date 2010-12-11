@@ -73,6 +73,14 @@ public class Procedures {
 		ip.turn(100);
 	}
 
+
+	@Test
+	public void arithmetic9() {
+		Interpreter ip = new Interpreter("10 10 = 1 assertEqual   10 20 = 0 assertEqual");
+		insertTestInstructions(ip);
+		ip.turn(100);
+	}
+
 	@Test
 	public void meta1() {
 		Interpreter ip = new Interpreter(" ' dup ' dup assertEqual");
