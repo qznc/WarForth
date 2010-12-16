@@ -5,26 +5,28 @@ import game.GameMain;
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 public class WarForthApplet extends Applet {
 	private static final long serialVersionUID = -4662920398000709556L;
 	private GameMain game;
-	private static final String default_prog = "" +
-	":imm begin   COMPILE-POSITION ; " +
-	":imm again   ' branch , COMPILE-POSITION - , ; " +
-	":imm until   ' 0branch , COMPILE-POSITION - , ; " +
-	": sleep 35 begin 1- dup 0= until ; " +
-	": rotating begin sleep direction 1+ turn! again ; " +
-	"move! " +
-	"360 randBounded turn! " +
-	"rotating ";
 
 	@Override
 	public void init() { /* applet loading */
+		String prog;
 		try {
-			game = new GameMain(1337, default_prog, default_prog);
+			prog = loadDefault();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
+		try {
+			game = new GameMain(1337, prog, prog);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -36,6 +38,18 @@ public class WarForthApplet extends Applet {
 		setBounds(0, 0, 500, 500);
 		setEnabled(true);
 		setName("WarForth");
+	}
+
+	private String loadDefault() throws IOException {
+		InputStream stream = this.getClass().getResourceAsStream("/resources/programs/ghengis.wf");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		StringBuffer buf = new StringBuffer();
+
+		while (reader.ready()) {
+			buf.append(reader.readLine());
+			buf.append("\n");
+		}
+		return buf.toString();
 	}
 
 	@Override
