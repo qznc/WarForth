@@ -66,7 +66,7 @@ public class Map {
 		for (int img_x = 0; img_x < map_img.getWidth(); img_x++) {
 			List<Ground> row = new ArrayList<Ground>(width);
 			for (int img_y = 0; img_y < map_img.getWidth(); img_y++) {
-				int pixel = map_img.getRGB(img_y, img_x);
+				int pixel = map_img.getRGB(img_x, img_y);
 
 				Ground ground = Ground.Void;
 				switch (pixel) {
