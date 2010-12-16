@@ -33,7 +33,7 @@ public class GameBoard {
 		blue_base = new Base(Faction.Blue);
 		things.add(blue_base);
 
-		map = new Map("first.bmp");
+		map = new Map("01.bmp");
 		map.init(red_base, blue_base);
 	}
 
