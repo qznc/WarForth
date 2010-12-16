@@ -132,7 +132,7 @@ public class GameBoard {
 		}
 	}
 
-	public void createBot(BotType type, Faction color, int x, int y) {
+	public void createBot(Faction color, int x, int y) {
 		String prog = null;
 		if (color == Faction.Red) prog = red_prog;
 		if (color == Faction.Blue) prog = blue_prog;
@@ -141,6 +141,8 @@ public class GameBoard {
 		final int maxX = map.getWidth();
 		final int maxY = map.getHeight();
 		ColoredActor b = null;
+		BotType type = BotType.values()[rnd.nextInt(BotType.values().length)];
+		// TODO type set by player!
 		switch (type) {
 		case Scout:
 			b = new Scout(prog, color, rnd, maxX, maxY,x,y);
