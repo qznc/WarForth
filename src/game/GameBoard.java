@@ -132,13 +132,24 @@ public class GameBoard {
 		}
 	}
 
-	public void createBot(Faction color, int x, int y) {
+	public void createBot(BotType type, Faction color, int x, int y) {
 		String prog = null;
 		if (color == Faction.Red) prog = red_prog;
 		if (color == Faction.Blue) prog = blue_prog;
 		assert x < map.getWidth();
 		assert y < map.getHeight();
-		ColoredActor b = new Scout(prog, color, rnd, map.getWidth(), map.getHeight(),x,y);
+		final int maxX = map.getWidth();
+		final int maxY = map.getHeight();
+		ColoredActor b = null;
+		switch (type) {
+		case Scout:
+			b = new Scout(prog, color, rnd, maxX, maxY,x,y);
+			break;
+		case Tank:
+			b = new Tank(prog, color, rnd, maxX, maxY,x,y);
+			break;
+
+		}
 		things.add(b);
 	}
 

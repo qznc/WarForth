@@ -11,9 +11,9 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 
-public class Scout extends Bot {
+public class Tank extends Bot {
 
-	public Scout(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y) {
+	public Tank(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y) {
 		super(program, color, rnd, maxX, maxY, x, y);
 	}
 
@@ -27,14 +27,14 @@ public class Scout extends Bot {
 		URL url = null;
 		switch (color) {
 		case Red:
-			url = this.getClass().getResource("/resources/img/scout_red.png");
+			url = this.getClass().getResource("/resources/img/tank_red.png");
 			break;
 		case Blue:
-			url = this.getClass().getResource("/resources/img/scout_blue.png");
+			url = this.getClass().getResource("/resources/img/tank_blue.png");
 			break;
 		case Neutral:
 		case Nobody:
-			assert false : "scout has wrong color";
+			assert false : "tank has wrong color";
 		}
 		sprite = (BufferedImage) new ImageIcon(ImageIO.read(url)).getImage();
 	}
@@ -43,15 +43,15 @@ public class Scout extends Bot {
 	protected double getSpeed(Ground ground) {
 		switch (ground) {
 		case Forest:
-			return 0.9;
+			return 0.85;
 		case Grass:
-			return 1.5;
+			return 0.89;
 		case Rocks:
-			return 0.9;
+			return 0.85;
 		case Sand:
-			return 0.9;
+			return 0.6;
 		case Swamp:
-			return 0.8;
+			return 0.5;
 		case Unknown:
 			return 0.0001;
 		case Void:
@@ -67,17 +67,17 @@ public class Scout extends Bot {
 	protected double getVisualRange(Ground ground) {
 		switch (ground) {
 		case Forest:
-			return 0.5;
+			return 0.3;
 		case Grass:
-			return 2.0;
+			return 1.0;
 		case Rocks:
-			return 1.5;
+			return 0.9;
 		case Sand:
-			return 2.0;
+			return 1.0;
 		case Swamp:
-			return 1.2;
+			return 0.9;
 		case Water:
-			return 1.5;
+			return 0.8;
 		case Unknown:
 			return 0.0001;
 		case Void:
@@ -91,7 +91,7 @@ public class Scout extends Bot {
 	protected double getShootingRange(Ground ground) {
 		switch (ground) {
 		case Forest:
-			return 0.3;
+			return 0.4;
 		case Grass:
 			return 0.5;
 		case Rocks:
@@ -113,22 +113,22 @@ public class Scout extends Bot {
 
 	@Override
 	protected int getEnergyRefill() {
-		return 40;
+		return 20;
 	}
 
 	@Override
 	protected int getDamage() {
-		return 25;
+		return 50;
 	}
 
 	@Override
 	protected float getArmorModificator() {
-		return 1.0f;
+		return 0.7f;
 	}
 
 	@Override
 	public String toString() {
-		return "<scout "+color+"-"+hashCode()+">";
+		return "<tank "+color+"-"+hashCode()+">";
 	}
 
 }

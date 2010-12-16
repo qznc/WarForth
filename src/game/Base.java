@@ -37,7 +37,7 @@ public class Base extends ColoredActor {
 			return;
 		}
 
-		board.createBot(color, x/POSITION_SCALE, y/POSITION_SCALE);
+		board.createBot(BotType.Tank, color, x/POSITION_SCALE, y/POSITION_SCALE);
 		built = 0;
 
 		if (hp > 0) hp = Math.min(100, hp + 3);
