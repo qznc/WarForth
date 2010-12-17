@@ -14,6 +14,7 @@ import forth.words.IntegerWord;
 import forth.words.Word;
 
 public abstract class Bot extends ColoredActor {
+	private static final int MAXIMUM_RADIO_MESSAGES = 10;
 	private static final int TICKCOUNT = 100;
 	private static final double VRANGE_FACTOR = 80.0 * POSITION_SCALE;
 	private static final double SRANGE_FACTOR = 120.0 * POSITION_SCALE;
@@ -32,9 +33,10 @@ public abstract class Bot extends ColoredActor {
 	protected final Random rnd;
 	protected final int maxX;
 	protected final int maxY;
-	final int startX;
-	final int startY;
-	private final GameBoard board;
+	protected final int startX;
+	protected final int startY;
+	protected final GameBoard board;
+	protected LinkedList<RadioMessage> incomingRadio;
 
 	public Bot(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y, GameBoard board) {
 		super(ActorType.Bot, color);
@@ -46,6 +48,8 @@ public abstract class Bot extends ColoredActor {
 		assert y <= maxY;
 		this.startX = this.x = Math.min(this.maxX, (x * POSITION_SCALE));
 		this.startY = this.y = Math.min(this.maxY, (y * POSITION_SCALE));
+
+		resetRadio();
 
 		interpreter = new Interpreter(program);
 		injectWords();
@@ -237,6 +241,39 @@ public abstract class Bot extends ColoredActor {
 				state.stack.push(new IntegerWord(g.ordinal()));
 			}
 		});
+		interpreter.injectWord(new Word("resetRadio!") {
+			@Override
+			public void interpret(InterpreterState state) {
+				resetRadio();
+			}
+		});
+		interpreter.injectWord(new Word("emptyRadio?") {
+			@Override
+			public void interpret(InterpreterState state) {
+				state.stack.push(new IntegerWord(incomingRadio.isEmpty() ? 1 : 0));
+			}
+		});
+		interpreter.injectWord(new Word("popRadio!") {
+			@Override
+			public void interpret(InterpreterState state) {
+				RadioMessage msg = incomingRadio.pop();
+				state.stack.push(new IntegerWord(msg.d));
+				state.stack.push(new IntegerWord(msg.c));
+				state.stack.push(new IntegerWord(msg.b));
+				state.stack.push(new IntegerWord(msg.a));
+			}
+		});
+		interpreter.injectWord(new Word("sendRadio!") {
+			@Override
+			public void interpret(InterpreterState state) {
+				IntegerWord d = (IntegerWord) state.stack.pop();
+				IntegerWord c = (IntegerWord) state.stack.pop();
+				IntegerWord b = (IntegerWord) state.stack.pop();
+				IntegerWord a = (IntegerWord) state.stack.pop();
+				RadioMessage msg = new RadioMessage(a.value, b.value, c.value, d.value);
+				board.sendRadio(Bot.this, msg);
+			}
+		});
 	}
 
 	protected Ground getGround(int bx, int by) {
@@ -253,5 +290,16 @@ public abstract class Bot extends ColoredActor {
 			g.drawLine(x/POSITION_SCALE, y/POSITION_SCALE, display_shot.x/POSITION_SCALE, display_shot.y/POSITION_SCALE);
 			display_shot = null;
 		}
+	}
+
+	public void recvRadio(RadioMessage msg) {
+		incomingRadio.add(msg);
+		if (incomingRadio.size() > MAXIMUM_RADIO_MESSAGES) {
+			incomingRadio.pop();
+		}
+	}
+
+	protected void resetRadio() {
+		incomingRadio = new LinkedList<RadioMessage>();
 	}
 }

@@ -1,0 +1,56 @@
+:imm begin   COMPILE-POSITION ;
+:imm again   ' branch , COMPILE-POSITION - , ;
+:imm until   ' 0branch , COMPILE-POSITION - , ;
+:imm if    ' 0branch , COMPILE-POSITION 0 , ;
+:imm else  ' branch , COMPILE-POSITION 0 ,
+	swap dup COMPILE-POSITION swap - swap ! ;
+:imm then  dup COMPILE-POSITION swap - swap ! ;
+
+: STAMPEDE 6345 ;
+
+: sleep begin 1- dup 0= until drop ;
+
+: checkRadio
+begin
+	emptyRadio?
+	if 0 return then
+	popRadio!
+	STAMPEDE =
+	if turn! move! 2drop 1 return then
+	2drop drop
+again ;
+
+: countFriends
+scan!
+0
+begin
+	scanNext! if
+		scannedColor 1 = if
+		1 +
+		then
+	else
+		return
+	then
+again ;
+
+: startStampede
+0
+0
+360 randBounded
+	dup turn! move!
+STAMPEDE
+sendRadio!
+;
+
+: main
+begin
+checkRadio
+if
+	10000 randBounded sleep
+else
+	countFriends 3 >
+	if startStampede 1000 randBounded sleep resetRadio! then
+then
+again ;
+
+main

@@ -162,4 +162,13 @@ public class GameBoard {
 	public Ground getGround(int x, int y) {
 		return map.getGround(x,y);
 	}
+
+	public void sendRadio(Bot self, RadioMessage msg) {
+		for (ColoredActor a : things) {
+			if (a.type != ActorType.Bot) continue;
+			final Bot bot = (Bot) a;
+			if (bot == self) continue;
+			bot.recvRadio(msg);
+		}
+	}
 }

@@ -89,6 +89,13 @@ public class Procedures {
 	}
 
 	@Test
+	public void meta2() {
+		Interpreter ip = new Interpreter(": constRand [ 11 , ] ; constRand 11 assertEqual");
+		insertTestInstructions(ip);
+		ip.turn(100);
+	}
+
+	@Test
 	public void branches() {
 		Interpreter ip = new Interpreter(" " +
 				" 3    branch 2 4   3 assertEqual " +
