@@ -34,11 +34,12 @@ public abstract class Bot extends ColoredActor {
 	protected final int maxY;
 	final int startX;
 	final int startY;
-	private Map map_cache;
+	private final GameBoard board;
 
-	public Bot(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y) {
+	public Bot(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y, GameBoard board) {
 		super(ActorType.Bot, color);
 		this.rnd = rnd;
+		this.board = board;
 		this.maxX = maxX * POSITION_SCALE;
 		this.maxY = maxY * POSITION_SCALE;
 		assert x <= maxX;
@@ -51,11 +52,9 @@ public abstract class Bot extends ColoredActor {
 	}
 
 	public void turn(Map map, List<ColoredActor> things) {
-		this.map_cache = map;
-
 		interpreter.turn(TICKCOUNT);
 
-		final Ground ground = map.get(x / POSITION_SCALE, y / POSITION_SCALE);
+		final Ground ground = map.getGround(x / POSITION_SCALE, y / POSITION_SCALE);
 
 		updateSightings(things, ground);
 
@@ -67,7 +66,6 @@ public abstract class Bot extends ColoredActor {
 
 		hp = Math.min(100, hp + 5);
 		energy = Math.min(100, energy + getEnergyRefill());
-		map_cache = null;
 	}
 
 	private void move(final Ground ground) {
@@ -242,7 +240,7 @@ public abstract class Bot extends ColoredActor {
 	}
 
 	protected Ground getGround(int bx, int by) {
-		return map_cache.get(bx/POSITION_SCALE, by/POSITION_SCALE);
+		return board.getGround(bx/POSITION_SCALE, by/POSITION_SCALE);
 	}
 
 	@Override

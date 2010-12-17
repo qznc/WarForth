@@ -31,7 +31,7 @@ public class Map {
 		offscreen = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	}
 
-	public Ground get(final int x, final int y) {
+	public Ground getGround(final int x, final int y) {
 		if (x < 0 || y < 0 || x >= width || y >= height) {
 			return Ground.Void;
 		}

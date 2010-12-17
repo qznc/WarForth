@@ -13,8 +13,8 @@ import javax.swing.ImageIcon;
 
 public class Tank extends Bot {
 
-	public Tank(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y) {
-		super(program, color, rnd, maxX, maxY, x, y);
+	public Tank(String program, Faction color, Random rnd, int maxX, int maxY, int x, int y, GameBoard board) {
+		super(program, color, rnd, maxX, maxY, x, y, board);
 	}
 
 	@Override

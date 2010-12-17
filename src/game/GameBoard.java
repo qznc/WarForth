@@ -145,10 +145,10 @@ public class GameBoard {
 		// TODO type set by player!
 		switch (type) {
 		case Scout:
-			b = new Scout(prog, color, rnd, maxX, maxY,x,y);
+			b = new Scout(prog, color, rnd, maxX, maxY, x, y, this);
 			break;
 		case Tank:
-			b = new Tank(prog, color, rnd, maxX, maxY,x,y);
+			b = new Tank(prog, color, rnd, maxX, maxY, x, y, this);
 			break;
 
 		}
@@ -157,5 +157,9 @@ public class GameBoard {
 
 	public Faction getWinner() {
 		return winner;
+	}
+
+	public Ground getGround(int x, int y) {
+		return map.getGround(x,y);
 	}
 }
