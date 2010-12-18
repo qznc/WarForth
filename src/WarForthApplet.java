@@ -17,16 +17,18 @@ public class WarForthApplet extends Applet {
 
 	@Override
 	public void init() { /* applet loading */
-		String prog;
+		String red_prog;
+		String blue_prog;
 		try {
-			prog = loadDefault();
+			red_prog = loadResourceProgram("herd");
+			blue_prog = loadResourceProgram("ghengis");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			return;
 		}
 		try {
-			game = new GameMain(1337, prog, prog);
+			game = new GameMain(1337, red_prog, blue_prog);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -40,8 +42,8 @@ public class WarForthApplet extends Applet {
 		setName("WarForth");
 	}
 
-	private String loadDefault() throws IOException {
-		InputStream stream = this.getClass().getResourceAsStream("/resources/programs/ghengis.wf");
+	private String loadResourceProgram(String name) throws IOException {
+		InputStream stream = this.getClass().getResourceAsStream("/resources/programs/"+name+".wf");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		StringBuffer buf = new StringBuffer();
 
