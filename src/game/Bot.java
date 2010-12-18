@@ -266,10 +266,10 @@ public abstract class Bot extends ColoredActor {
 		interpreter.injectWord(new Word("sendRadio!") {
 			@Override
 			public void interpret(InterpreterState state) {
-				IntegerWord d = (IntegerWord) state.stack.pop();
-				IntegerWord c = (IntegerWord) state.stack.pop();
-				IntegerWord b = (IntegerWord) state.stack.pop();
 				IntegerWord a = (IntegerWord) state.stack.pop();
+				IntegerWord b = (IntegerWord) state.stack.pop();
+				IntegerWord c = (IntegerWord) state.stack.pop();
+				IntegerWord d = (IntegerWord) state.stack.pop();
 				RadioMessage msg = new RadioMessage(a.value, b.value, c.value, d.value);
 				board.sendRadio(Bot.this, msg);
 			}

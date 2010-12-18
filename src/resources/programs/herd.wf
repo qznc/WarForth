@@ -12,8 +12,7 @@
 
 : checkRadio
 begin
-	emptyRadio?
-	if 0 return then
+	emptyRadio?	if 0 return then
 	popRadio!
 	STAMPEDE =
 	if turn! move! 2drop 1 return then
@@ -33,6 +32,8 @@ begin
 	then
 again ;
 
+: herded countFriends 3 > ;
+
 : startStampede
 0
 0
@@ -44,12 +45,11 @@ sendRadio!
 
 : main
 begin
-checkRadio
+herded 0= if checkRadio else 0 then
 if
-	10000 randBounded sleep
+	100 sleep
 else
-	countFriends 3 >
-	if startStampede 1000 randBounded sleep resetRadio! then
+	herded if startStampede 3000 sleep resetRadio! then
 then
 again ;
 
